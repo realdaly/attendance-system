@@ -1,0 +1,7 @@
+node_modules/
+venv/
+media/
+/db.sqlite3
+attendance/__pycache__/
+main/__pycache__/
+main/migrations/

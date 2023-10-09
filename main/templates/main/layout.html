@@ -1,0 +1,21 @@
+{% load compress %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة حضور وانصراف الموظفين</title>
+
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    {% endcompress %}
+</head>
+<body>
+    
+    {% block body %}
+    {% endblock %}
+
+</body>
+</html>
