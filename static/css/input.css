@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    @font-face {
+        font-family: "kufi";
+        src: url("../fonts/NotoKufiArabic-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "kufi";
+        src: url("../fonts/NotoKufiArabic-Bold.ttf") format("truetype");
+        font-weight: 700;
+        font-style: bold;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "kufi";
+        src: url("../fonts/NotoKufiArabic-ExtraBold.ttf") format("truetype");
+        font-weight: 900;
+        font-style: bolder;
+        font-display: swap;
+      }
+}
+
+@layer components {
+  .wrapper {
+      max-width: 100rem;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+  }
+}

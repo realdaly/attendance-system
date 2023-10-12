@@ -5,5 +5,6 @@ app_name = "main"
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("employees/", views.employees, name="employees")
+    path("<str:groupId>/employees/", views.employees, name="employees"),
+    path("<str:groupId>/profile/<str:employeeId>/<str:yearId>/<str:monthId>/", views.profile, name="profile")
 ]

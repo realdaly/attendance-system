@@ -4,7 +4,11 @@ module.exports = {
     './main/**/*.html'
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        kufi: "kufi",
+      },
+    },
   },
   plugins: [],
 }

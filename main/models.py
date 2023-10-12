@@ -16,19 +16,21 @@ class Image(models.Model):
         super().save(*args, **kwargs)
 
 class Group(models.Model):
-    name = models.CharField(max_length=255)
-    # Add other system-specific settings here
+    title = models.CharField(max_length=255)
+    required_hours = models.PositiveIntegerField(default=0)
+    required_minutes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return self.name
+        return self.title
     
 
 
 
 class Employee(models.Model):
     name = models.CharField(max_length=255)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="employees", null=True, blank=True)
     main_img = main_img = models.ForeignKey(Image, default=0, on_delete=models.PROTECT, related_name="employees")
-    order = models.PositiveIntegerField(unique=True)  # To specify the order of employees
+    order = models.PositiveIntegerField(default=0)  # To specify the order of employees
 
     def __str__(self):
         return self.name
@@ -37,22 +39,32 @@ class Employee(models.Model):
 
 
 class Year(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="years", null=True, blank=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="years")
-    name = models.CharField(max_length=4)  # For example, "2023"
+    title = models.CharField(max_length=4)  # For example, "2023"
     more_hours = models.PositiveIntegerField(default=0)
     more_minutes = models.PositiveIntegerField(default=0)
     less_hours = models.PositiveIntegerField(default=0)
     less_minutes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return self.name
-    
+        return self.title
+
     def update_more_less(self):
         # Calculate the difference between more and less hours and minutes
         more_hours = self.months.aggregate(models.Sum('more_hours'))['more_hours__sum'] or 0
         more_minutes = self.months.aggregate(models.Sum('more_minutes'))['more_minutes__sum'] or 0
         less_hours = self.months.aggregate(models.Sum('less_hours'))['less_hours__sum'] or 0
         less_minutes = self.months.aggregate(models.Sum('less_minutes'))['less_minutes__sum'] or 0
+
+        # Convert each 60 minutes to 1 hour
+        if less_minutes >= 60:
+            less_hours = less_hours + less_minutes / 60
+            less_minutes = less_minutes % 60
+
+        if more_minutes >= 60:
+            more_hours = more_hours + more_minutes / 60
+            more_minutes = more_minutes % 60
 
         result_hours = more_hours - less_hours
         result_minutes = more_minutes - less_minutes
@@ -61,68 +73,85 @@ class Year(models.Model):
         if result_hours < 0:
             self.less_hours = abs(result_hours)
             self.more_hours = 0
-        else:
+        elif result_hours > 0:
             self.more_hours = result_hours
             self.less_hours = 0
+        else:
+            self.more_hours = 0
+            self.more_minutes = 0
 
         if result_minutes < 0:
             self.less_minutes = abs(result_minutes)
             self.more_minutes = 0
-        else:
+        elif result_minutes > 0:
             self.more_minutes = result_minutes
+            self.less_minutes = 0
+        else:
+            self.more_minutes = 0
             self.less_minutes = 0
 
         self.save()
-
-    # Override the save method to update more and less hours and minutes
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    
     
     
 
 
 class Month(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="months", null=True, blank=True)
     year = models.ForeignKey(Year, on_delete=models.CASCADE, related_name="months")
-    name = models.CharField(max_length=255)  # For example, "January"
+    title = models.CharField(max_length=255)
     more_hours = models.PositiveIntegerField(default=0)
     more_minutes = models.PositiveIntegerField(default=0)
     less_hours = models.PositiveIntegerField(default=0)
     less_minutes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return self.name
+        return self.title
     
     def update_more_less(self):
+        self.more_hours = 0
+        self.more_minutes = 0
+        self.less_hours = 0
+        self.less_minutes = 0
+        
         # Calculate the difference between more and less hours and minutes
         more_hours = self.days.aggregate(models.Sum('more_hours'))['more_hours__sum'] or 0
         more_minutes = self.days.aggregate(models.Sum('more_minutes'))['more_minutes__sum'] or 0
         less_hours = self.days.aggregate(models.Sum('less_hours'))['less_hours__sum'] or 0
         less_minutes = self.days.aggregate(models.Sum('less_minutes'))['less_minutes__sum'] or 0
 
-        # Convert excess minutes to hours
-        extra_hours_from_minutes = more_minutes // 60
-        extra_minutes_from_minutes = more_minutes % 60
+        # Convert each 60 minutes to 1 hour
+        if less_minutes >= 60:
+            less_hours = less_hours + less_minutes / 60
+            less_minutes = less_minutes % 60
 
-        # Calculate the result hours and minutes
-        result_hours = more_hours - less_hours + extra_hours_from_minutes
-        result_minutes = extra_minutes_from_minutes - less_minutes
+        if more_minutes >= 60:
+            more_hours = more_hours + more_minutes / 60
+            more_minutes = more_minutes % 60
+
+        result_hours = more_hours - less_hours
+        result_minutes = more_minutes - less_minutes
 
         # Update more and less hours and minutes based on the result
-        if result_minutes < 0:
-            # Borrow from hours if needed
-            result_hours -= 1
-            result_minutes += 60
-
         if result_hours < 0:
             self.less_hours = abs(result_hours)
-            self.less_minutes = abs(result_minutes)
+            self.more_hours = 0
+        elif result_hours > 0:
+            self.more_hours = result_hours
+            self.less_hours = 0
+        else:
             self.more_hours = 0
             self.more_minutes = 0
-        else:
-            self.less_hours = 0
-            self.less_minutes = 0
-            self.more_hours = result_hours
+
+        if result_minutes < 0:
+            self.less_minutes = abs(result_minutes)
+            self.more_minutes = 0
+        elif result_minutes > 0:
             self.more_minutes = result_minutes
+            self.less_minutes = 0
+        else:
+            self.more_minutes = 0
+            self.less_minutes = 0
 
         self.save()
     
@@ -135,6 +164,7 @@ class Day(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="days")
     month = models.ForeignKey(Month, on_delete=models.CASCADE, related_name="days")
     year = models.ForeignKey(Year, on_delete=models.CASCADE, related_name="days")
+    title = models.CharField(max_length=255, null=True, blank=True)
     required_hours = models.PositiveIntegerField()
     required_minutes = models.PositiveIntegerField()
     attend_hour = models.PositiveIntegerField()
@@ -147,9 +177,10 @@ class Day(models.Model):
     less_minutes = models.PositiveIntegerField(default=0)
     total_hours = models.IntegerField(default=0)
     total_minutes = models.IntegerField(default=0)
+    note = models.TextField(max_length=10000, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.employee.name}'s attendance on {self.month.name} {self.year.name}"
+        return f"{self.employee.name} - {self.month.title} {self.year.title}"
     
     def update_month_and_year(self):
         # Update related Month and Year
