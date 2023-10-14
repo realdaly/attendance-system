@@ -37,58 +37,142 @@
 
 
 {% block body %}
-<div class="container mx-auto px-4 sm:px-8">
+<div class="container mx-auto px-4 sm:px-8" x-data="{ modalOpen: false }">
     <div class="py-8">
         <div>
             <h2 class="text-2xl font-semibold leading-tight">Users</h2>
         </div>
 
 
-        <div class="my-2 flex sm:flex-row flex-col">
+        <div class="my-2 justify-between flex sm:flex-row flex-col">
             <div class="flex flex-row mb-1 sm:mb-0">
-                <div class="relative">
-                    <select class="appearance-none h-full rounded-r border block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                        <option>5</option>
-                        <option>10</option>
-                        <option>20</option>
-                    </select>
-                    <div
-                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                        </svg>
-                    </div>
-                </div>
-                <div class="relative">
-                    <select class="appearance-none h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
-                        {% for month in employee.months.all %}
-                        <option>{{ month.title }}</option>
-                        {% endfor %}
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <div class="block relative">
-                <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
-                    <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-gray-500">
+
+                <!-- Years dropdown -->
+                <div
+                    x-data="{ dropdownOpen: false}"
+                    @click.outside="dropdownOpen = false"
+                    class="relative inline-block text-right"
+                >
+                    <button
+                        @click="dropdownOpen = !dropdownOpen"
+                        class="bg-orange-400 flex items-center rounded py-3 px-5 font-semibold text-white"
+                    >
+                        {{ current_year.title }}
+                    <span class="pr-2">
+                        <svg width="12" height="7" viewBox="0 0 12 7" class="fill-current">
                         <path
-                            d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z">
-                        </path>
-                    </svg>
-                </span>
-                <input placeholder="البحث" class="appearance-none rounded-l rounded-r sm:rounded-r-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+                            d="M0.564864 0.879232C0.564864 0.808624 0.600168 0.720364 0.653125 0.667408C0.776689 0.543843 0.970861 0.543844 1.09443 0.649756L5.82517 5.09807C5.91343 5.18633 6.07229 5.18633 6.17821 5.09807L10.9089 0.649756C11.0325 0.526192 11.2267 0.543844 11.3502 0.667408C11.4738 0.790972 11.4562 0.985145 11.3326 1.10871L6.60185 5.55702C6.26647 5.85711 5.73691 5.85711 5.41917 5.55702L0.670776 1.10871C0.600168 1.0381 0.564864 0.967492 0.564864 0.879232Z"
+                        />
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M1.4719 0.229332L6.00169 4.48868L10.5171 0.24288C10.9015 -0.133119 11.4504 -0.0312785 11.7497 0.267983C12.1344 0.652758 12.0332 1.2069 11.732 1.50812L11.7197 1.52041L6.97862 5.9781C6.43509 6.46442 5.57339 6.47872 5.03222 5.96853C5.03192 5.96825 5.03252 5.96881 5.03222 5.96853L0.271144 1.50833C0.123314 1.3605 -5.04223e-08 1.15353 -3.84322e-08 0.879226C-2.88721e-08 0.660517 0.0936127 0.428074 0.253705 0.267982C0.593641 -0.0719548 1.12269 -0.0699964 1.46204 0.220873L1.4719 0.229332ZM5.41917 5.55702C5.73691 5.85711 6.26647 5.85711 6.60185 5.55702L11.3326 1.10871C11.4562 0.985145 11.4738 0.790972 11.3502 0.667408C11.2267 0.543844 11.0325 0.526192 10.9089 0.649756L6.17821 5.09807C6.07229 5.18633 5.91343 5.18633 5.82517 5.09807L1.09443 0.649756C0.970861 0.543844 0.776689 0.543843 0.653125 0.667408C0.600168 0.720364 0.564864 0.808624 0.564864 0.879232C0.564864 0.967492 0.600168 1.0381 0.670776 1.10871L5.41917 5.55702Z"
+                        />
+                        </svg>
+                    </span>
+                    </button>
+                    <div
+                        :class="dropdownOpen ? 'top-full opacity-100 visible' : 'top-[110%] invisible opacity-0' "
+                        class="absolute right-0 z-10 mt-2 w-full rounded border bg-white transition-all"
+                    >
+                        {% for year in employee.years.all %}
+                            {% if year.id != current_year.id %}
+                                {% if year.months %}
+                                <a
+                                    href="{% url 'main:profile' employee.group.id employee.id year.id year.months.first.id %}"
+                                    class="hover:bg-orange-400 hover:text-orange-400 block py-2 px-5 font-semibold hover:bg-opacity-5"
+                                >
+                                    {{ year.title }}
+                                </a>
+                                {% else %}
+                                <span
+                                    @click="modalOpen = true"
+                                    onclick="addMonth()"
+                                    class="hover:bg-orange-400 cursor-pointer hover:text-orange-400 block py-2 px-5 font-semibold hover:bg-opacity-5"
+                                >
+                                    {{ year.title }}
+                                </span>
+                                {% endif %}
+                            {% else %}
+                            <span class="block py-2 cursor-default bg-orange-400 bg-opacity-5 text-orange-400 px-5 font-semibold">
+                                {{ year.title }}
+                            </span>
+                            {% endif %}
+                        {% endfor %}
+                        <span
+                            class="py-2 text-black hover:text-gray-600 flex items-center gap-x-2 justify-center"
+                            @click="modalOpen = true"
+                            onclick="addYear()"
+                        >
+                            <button class="py-2 rounded-md text-sm font-semibold hover:bg-opacity-75">
+                                إضافة
+                            </button>
+                            <svg  class="fill-current font-bold" width="17" height="17" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Months dropdown -->
+                <div
+                    x-data="{ dropdownOpen: false}"
+                    @click.outside="dropdownOpen = false"
+                    class="relative inline-block mx-3 text-right"
+                >
+                    <button
+                        @click="dropdownOpen = !dropdownOpen"
+                        class="bg-orange-400 flex items-center rounded py-3 px-5 font-semibold text-white"
+                    >
+                        {{ current_month.title }}
+                    <span class="pr-2">
+                        <svg width="12" height="7" viewBox="0 0 12 7" class="fill-current">
+                        <path
+                            d="M0.564864 0.879232C0.564864 0.808624 0.600168 0.720364 0.653125 0.667408C0.776689 0.543843 0.970861 0.543844 1.09443 0.649756L5.82517 5.09807C5.91343 5.18633 6.07229 5.18633 6.17821 5.09807L10.9089 0.649756C11.0325 0.526192 11.2267 0.543844 11.3502 0.667408C11.4738 0.790972 11.4562 0.985145 11.3326 1.10871L6.60185 5.55702C6.26647 5.85711 5.73691 5.85711 5.41917 5.55702L0.670776 1.10871C0.600168 1.0381 0.564864 0.967492 0.564864 0.879232Z"
+                        />
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M1.4719 0.229332L6.00169 4.48868L10.5171 0.24288C10.9015 -0.133119 11.4504 -0.0312785 11.7497 0.267983C12.1344 0.652758 12.0332 1.2069 11.732 1.50812L11.7197 1.52041L6.97862 5.9781C6.43509 6.46442 5.57339 6.47872 5.03222 5.96853C5.03192 5.96825 5.03252 5.96881 5.03222 5.96853L0.271144 1.50833C0.123314 1.3605 -5.04223e-08 1.15353 -3.84322e-08 0.879226C-2.88721e-08 0.660517 0.0936127 0.428074 0.253705 0.267982C0.593641 -0.0719548 1.12269 -0.0699964 1.46204 0.220873L1.4719 0.229332ZM5.41917 5.55702C5.73691 5.85711 6.26647 5.85711 6.60185 5.55702L11.3326 1.10871C11.4562 0.985145 11.4738 0.790972 11.3502 0.667408C11.2267 0.543844 11.0325 0.526192 10.9089 0.649756L6.17821 5.09807C6.07229 5.18633 5.91343 5.18633 5.82517 5.09807L1.09443 0.649756C0.970861 0.543844 0.776689 0.543843 0.653125 0.667408C0.600168 0.720364 0.564864 0.808624 0.564864 0.879232C0.564864 0.967492 0.600168 1.0381 0.670776 1.10871L5.41917 5.55702Z"
+                        />
+                        </svg>
+                    </span>
+                    </button>
+                    <div
+                        :class="dropdownOpen ? 'top-full opacity-100 visible' : 'top-[110%] invisible opacity-0' "
+                        class="absolute right-0 z-10 mt-2 w-full rounded border bg-white transition-all"
+                    >
+                        {% for month in current_year.months.all %}
+                            {% if month.id != current_month.id %}
+                            <a
+                                href="{% url 'main:profile' employee.group.id employee.id current_year.id month.id %}"
+                                class="hover:bg-orange-400 hover:text-orange-400 block py-2 px-5 font-semibold hover:bg-opacity-5"
+                            >
+                                {{ month.title }}
+                            </a>
+                            {% else %}
+                            <span class="block py-2 cursor-default bg-orange-400 bg-opacity-5 text-orange-400 px-5 font-semibold">
+                                {{ month.title }}
+                            </span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>                  
             </div>
 
-            
+            <button
+                @click="modalOpen = true"
+                class="bg-orange-400 flex items-center rounded py-3 px-5 font-semibold text-white"
+                onclick="addDay()"
+            >
+                إضافة يوم
+                <span class="pr-2">
+                    <svg  class="fill-current font-bold" width="20" height="20" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
+                </span>
+            </button>
         </div>
 
 
 
-        <!-- Table  -->
+        <!-- Days table -->
         <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
             <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
                 <table class="min-w-full leading-normal">
@@ -190,7 +274,13 @@
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200">
                                 {% if day.note %}
-                                <button class="bg-orange-400 py-1 text-stone-800 px-3 rounded-full text-sm font-semibold hover:bg-opacity-75">عرض الملاحظات</button>
+                                <button 
+                                    class="bg-orange-400 py-1 text-white px-3 rounded-full text-sm font-semibold hover:bg-opacity-75"
+                                    @click="modalOpen = true"
+                                    onclick="showNote('{{ day.note }}')"
+                                >
+                                    عرض الملاحظات
+                                </button>
                                 {% endif %}
                             </td>
                         </tr>
@@ -223,26 +313,249 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+        </div>
 
+        <!-- Month results table -->
+        <div class="mx-auto flex justify-center sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+            <div class="inline-block shadow rounded-lg overflow-hidden">
+                <table class="min-w-full leading-normal">
+                    <thead>
+                        <tr>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-lg font-semibold text-gray-600">
+                                المجموع لشهر {{ current_month.title }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 
-                <div
-                    class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
-                    <span class="text-xs xs:text-sm text-gray-900">
-                        Showing 1 to 4 of 50 Entries
-                    </span>
-                    <div class="inline-flex mt-2 xs:mt-0">
-                        <button
-                            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                            Prev
-                        </button>
-                        <button
-                            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
-                            Next
-                        </button>
-                    </div>
-                </div>
+                                <p class="mb-2">الزيادة بالوقت: </p>
+                                <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                                    <span class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                                    <span class="relative">
+                                        <p class="text-gray-900 whitespace-no-wrap"> 
+                                            <span class="font-bold">{{ current_month.more_hours }}</span>
+                                            ساعة و 
+                                            <span class="font-bold">{{ current_month.more_minutes }}</span>
+                                            دقيقة
+                                        </p>
+                                    </span>
+                                </span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <p class="mb-2">النقيصة بالوقت: </p>
+                                <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
+                                    <span class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+                                    <span class="relative">
+                                        <p class="text-gray-900 whitespace-no-wrap"> 
+                                            <span class="font-bold">{{ current_month.less_hours }}</span>
+                                            ساعة و 
+                                            <span class="font-bold">{{ current_month.less_minutes }}</span>
+                                            دقيقة
+                                        </p>
+                                    </span>
+                                </span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    {% include "main/components/Modal.html" %}
 </div>
+
+<script>
+    const modal = document.getElementById("modal")
+
+    function addYear(){
+            modal.innerHTML = 
+            `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+                إضافة سنة
+            </h3>
+
+            <form action={% url 'main:addYear' group.id %} method="POST">
+                {% csrf_token %}
+                <input
+                    class="w-full max-w-xl px-4 py-2 border rounded-md dark:bg-darker dark:border-gray-700 focus:outline-none focus:ring focus:ring-primary-100 dark:focus:ring-primary-darker" 
+                    type="text" 
+                    placeholder="عنوان السنة، 2023 مثلاً" 
+                    required=""
+                    x-ref="input"
+                    name="title"
+                >
+                <input class="hidden" name="employee" value="{{ employee.id }}" hidden>
+                <input class="hidden" name="more_hours" value="0" hidden>
+                <input class="hidden" name="more_minutes" value="0" hidden>
+                <input class="hidden" name="less_hours" value="0" hidden>
+                <input class="hidden" name="less_minutes" value="0" hidden>
+
+                <div class="flex flex-wrap justify-center mt-5 -mx-3">
+                    <div class="w-1/6 px-3">
+                        <button
+                            @click="modalOpen = false"
+                            class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        >
+                            إلغاء
+                        </button>
+                    </div>
+                    <div class="w-1/6 px-3">
+                        <button
+                            type="submit"
+                            class="block w-full p-3 text-base font-bold text-center transition border rounded-lg bg-primary border-primary hover:bg-opacity-90"
+                        >
+                            تم
+                        </button>
+                    </div>
+                </div>
+            </form>`
+    }
+
+    function addMonth(){
+        modal.innerHTML = 
+        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+            أضف شهر قبل الانتقال إلى السنة
+        </h3>
+    
+        <input
+            class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+            type="text" 
+            placeholder="اكتب العنوان هنا" 
+            required=""
+            id="adminTitle"
+            x-ref="input"
+            x-on:keydown.enter="document.getElementById('title').value = document.getElementById('adminTitle').value;document.getElementById('generalForm').submit()"
+        >
+        
+        <div class="flex flex-wrap justify-center mt-5 -mx-3">
+            <div class="w-1/6 px-3">
+                <button
+                    @click="modalOpen = false"
+                    class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                >
+                    إلغاء
+                </button>
+            </div>
+            <div class="w-1/6 px-3">
+                <button
+                    class="block w-full p-3 text-base font-bold text-center transition border rounded-lg bg-primary border-primary hover:bg-opacity-90"
+                    x-on:click="document.getElementById('title').value = document.getElementById('adminTitle').value;document.getElementById('generalForm').submit()"
+                >
+                    تم
+                </button>
+            </div>
+        </div>`
+    }
+
+
+    function addDay(){
+            modal.innerHTML = 
+            `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+                إضافة يوم إلى {{ current_month.title }}
+            </h3>
+
+            <form class="flex flex-col gap-y-3" action={% url 'main:addDay' group.id employee.id current_year.id current_month.id %} method="POST">
+                {% csrf_token %}
+                <input
+                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                    type="text" 
+                    placeholder="عنوان اليوم، الثلاثاء مثلاً" 
+                    required=""
+                    x-ref="input"
+                    name="title"
+                >
+
+                <div class="flex flex-col items-right justify-center gap-3">
+                    <p class="font-semibold">الحضور:</p>
+                    <div class="flex justify-center items-center gap-x-3">
+                        <input
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                            placeholder="الساعة" 
+                            required=""
+                            name="attend_hour"
+                        >
+                        <input
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                            placeholder="الدقيقة" 
+                            required=""
+                            name="attend_minute"
+                        >
+                    </div>
+                    
+                </div>
+
+                <div class="flex flex-col items-right justify-center gap-3">
+                    <p class="font-semibold">الانصراف:</p>
+                    <div class="flex justify-center items-center gap-x-3">
+                        <input
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                            placeholder="الساعة" 
+                            required=""
+                            name="leave_hour"
+                        >
+                        <input
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                            placeholder="الدقيقة" 
+                            required=""
+                            name="leave_minute"
+                        >
+                    </div>
+                </div>
+                <textarea class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100 mt-3 resize-none" name="note" value="" placeholder="كتابة الملاحظات" rows="4"></textarea>
+
+
+                <input class="hidden" name="employee" value="{{ employee.id }}" hidden>
+                <input class="hidden" name="month" value="{{ current_month.id }}" hidden>
+                <input class="hidden" name="year" value="{{ current_year.id }}" hidden>
+                <input class="hidden" name="required_hours" value="{{ group.required_hours }}" hidden>
+                <input class="hidden" name="required_minutes" value="{{ group.required_minutes }}" hidden>
+                <input class="hidden" name="more_hours" value="0" hidden>
+                <input class="hidden" name="more_minutes" value="0" hidden>
+                <input class="hidden" name="less_hours" value="0" hidden>
+                <input class="hidden" name="less_minutes" value="0" hidden>
+                <input class="hidden" name="total_hours" value="0" hidden>
+                <input class="hidden" name="total_minutes" value="0" hidden>
+
+
+                <div class="flex flex-wrap justify-center mt-3 -mx-3">
+                    <div class="w-1/6 px-3">
+                        <button
+                            @click="modalOpen = false"
+                            class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        >
+                            إلغاء
+                        </button>
+                    </div>
+                    <div class="w-1/6 px-3">
+                        <button
+                            type="submit"
+                            class="block w-full p-3 text-base font-bold text-center transition border rounded-lg bg-primary border-primary hover:bg-opacity-90"
+                        >
+                            تم
+                        </button>
+                    </div>
+                </div>
+            </form>`
+    }
+
+    function showNote(note){
+        modal.innerHTML = 
+            `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+                الملاحظات
+            </h3>
+            <div>${note}</div>
+            `
+    }
+</script>
+
+
 {% endblock %}

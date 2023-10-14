@@ -1,0 +1,20 @@
+<div
+    @keydown.window.escape="modalOpen = false"
+    x-show="modalOpen"
+    :class="{'opacity-0': !modalOpen}"
+    x-transition:enter="transition ease-out duration-100" 
+    x-transition:enter-start="transform opacity-0" 
+    x-transition:enter-end="transform opacity-100" 
+    x-transition:leave="transition ease-in duration-75" 
+    x-transition:leave-start="transform opacity-100" 
+    x-transition:leave-end="transform opacity-0" 
+    class="fixed top-0 left-0 z-10 flex items-center justify-center w-full h-full min-h-screen px-4 py-5 bg-black opacity-0 bg-opacity-90"
+>
+    <div
+        @click.outside="modalOpen = false"
+        id="modal"
+        class="max-w-screen-2xl px-8 py-12 min-w-[40%] text-center bg-white rounded-lg w-fit"
+    >
+    
+    </div>
+</div>

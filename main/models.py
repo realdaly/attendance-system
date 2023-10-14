@@ -40,7 +40,6 @@ class Employee(models.Model):
 
 class Year(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="years", null=True, blank=True)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="years")
     title = models.CharField(max_length=4)  # For example, "2023"
     more_hours = models.PositiveIntegerField(default=0)
     more_minutes = models.PositiveIntegerField(default=0)
@@ -49,6 +48,9 @@ class Year(models.Model):
 
     def __str__(self):
         return self.title
+    
+    class Meta:
+        ordering = ['-id']
 
     def update_more_less(self):
         # Calculate the difference between more and less hours and minutes
