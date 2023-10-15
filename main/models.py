@@ -16,7 +16,7 @@ class Image(models.Model):
         super().save(*args, **kwargs)
 
 class Group(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, default="مجموعة بدون عنوان")
     required_hours = models.PositiveIntegerField(default=0)
     required_minutes = models.PositiveIntegerField(default=0)
 
@@ -27,10 +27,10 @@ class Group(models.Model):
 
 
 class Employee(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, default="موظف بدون أسم")
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="employees", null=True, blank=True)
     main_img = main_img = models.ForeignKey(Image, default=0, on_delete=models.PROTECT, related_name="employees")
-    order = models.PositiveIntegerField(default=0)  # To specify the order of employees
+    order = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -40,7 +40,7 @@ class Employee(models.Model):
 
 class Year(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="years", null=True, blank=True)
-    title = models.CharField(max_length=4)  # For example, "2023"
+    title = models.CharField(max_length=10, default="سنة بدون عنوان")
     more_hours = models.PositiveIntegerField(default=0)
     more_minutes = models.PositiveIntegerField(default=0)
     less_hours = models.PositiveIntegerField(default=0)
@@ -101,7 +101,7 @@ class Year(models.Model):
 class Month(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="months", null=True, blank=True)
     year = models.ForeignKey(Year, on_delete=models.CASCADE, related_name="months")
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=50, default="شهر في السنة")
     more_hours = models.PositiveIntegerField(default=0)
     more_minutes = models.PositiveIntegerField(default=0)
     less_hours = models.PositiveIntegerField(default=0)
@@ -109,6 +109,9 @@ class Month(models.Model):
 
     def __str__(self):
         return self.title
+    
+    class Meta:
+        ordering = ['-id']
     
     def update_more_less(self):
         self.more_hours = 0
@@ -166,7 +169,9 @@ class Day(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="days")
     month = models.ForeignKey(Month, on_delete=models.CASCADE, related_name="days")
     year = models.ForeignKey(Year, on_delete=models.CASCADE, related_name="days")
-    title = models.CharField(max_length=255, null=True, blank=True)
+    title = models.CharField(max_length=50, default="يوم في الشهر")
+    date_month = models.CharField(max_length=50, default=0)
+    date_day = models.CharField(max_length=50, default=0)
     required_hours = models.PositiveIntegerField()
     required_minutes = models.PositiveIntegerField()
     attend_hour = models.PositiveIntegerField()
@@ -179,10 +184,13 @@ class Day(models.Model):
     less_minutes = models.PositiveIntegerField(default=0)
     total_hours = models.IntegerField(default=0)
     total_minutes = models.IntegerField(default=0)
-    note = models.TextField(max_length=10000, null=True, blank=True)
+    note = models.TextField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
         return f"{self.employee.name} - {self.month.title} {self.year.title}"
+    
+    class Meta:
+        ordering = ['-id']
     
     def update_month_and_year(self):
         # Update related Month and Year

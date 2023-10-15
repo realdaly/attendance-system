@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 
 from .models import *
 from .forms import *
@@ -13,9 +14,26 @@ def index(request):
     return render (request, "main/index.html", context)
 
 
+def images(request):
+    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    imgs_per_fetch = 5
+
+    if is_ajax:
+        if request.method == "GET":
+            skip = int(request.GET.get("skip", 0))
+            images = Image.objects.all().values()[skip:skip + imgs_per_fetch]
+            
+            return JsonResponse({"context": list(images)})
+        return JsonResponse({"status": "Invalid request"}, status=400)
+
+
+
 def employees(request, groupId):
+    media_path = request.build_absolute_uri("/media/")
     group = Group.objects.get(id=groupId)
     employees = group.employees.all()
+    employee_last_year = None
+    employee_last_month = None
 
     for employee in employees:
         employee_last_year = employee.years.first()
@@ -27,6 +45,7 @@ def employees(request, groupId):
             
 
     context = {
+        "media_path": media_path,
         "group": group,
         "employees": employees,
         "employee_last_year": employee_last_year,
@@ -56,25 +75,32 @@ def profile(request, groupId, employeeId, yearId, monthId):
  
 
 #  ---------------------------------------- ADD ----------------------------------------
+def addGroup(request):
+    if request.method == "POST":
+        form = GroupForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("main:index")
+        else:
+            return redirect("main:index")
+        
+
+def addEmployee(request, groupId):
+    if request.method == "POST":
+        form = EmployeeForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("main:employees", groupId)
+        else:
+            print(form.errors)
+            return redirect("main:index")
+
+
 def addYear(request, groupId):
     if request.method == "POST":
-        employee = request.POST["employee"]
-        title = request.POST["title"]
-        more_hours = request.POST["more_hours"]
-        more_minutes = request.POST["more_minutes"]
-        less_hours = request.POST["less_hours"]
-        less_minutes = request.POST["less_minutes"]
-
-        data = {
-            "employee": employee,
-            "title": title,
-            "more_hours": more_hours,
-            "more_minutes": more_minutes,
-            "less_hours": less_hours,
-            "less_minutes": less_minutes,
-        }
-
-        form = YearForm(data)
+        form = YearForm(request.POST)
 
         if form.is_valid():
             form.save()
@@ -84,31 +110,13 @@ def addYear(request, groupId):
         
 
 
-def addMonth(request, groupId):
+def addMonth(request, groupId, employeeId, yearId, monthId):
     if request.method == "POST":
-        employee = request.POST["employee"]
-        year = request.POST["year"]
-        title = request.POST["title"]
-        more_hours = request.POST["more_hours"]
-        more_minutes = request.POST["more_minutes"]
-        less_hours = request.POST["less_hours"]
-        less_minutes = request.POST["less_minutes"]
-
-        data = {
-            "employee": employee,
-            "year": year,
-            "title": title,
-            "more_hours": more_hours,
-            "more_minutes": more_minutes,
-            "less_hours": less_hours,
-            "less_minutes": less_minutes,
-        }
-
-        form = MonthForm(data)
+        form = MonthForm(request.POST)
 
         if form.is_valid():
             form.save()
-            return redirect("main:employees", groupId)
+            return redirect("main:profile", groupId, employeeId, yearId, monthId)
         else:
             return redirect("main:index")
         
@@ -116,45 +124,7 @@ def addMonth(request, groupId):
 
 def addDay(request, groupId, employeeId, yearId, monthId):
     if request.method == "POST":
-        employee = request.POST["employee"]
-        month = request.POST["month"]
-        year = request.POST["year"]
-        title = request.POST["title"]
-        required_hours = request.POST["required_hours"]
-        required_minutes = request.POST["required_minutes"]
-        attend_hour = request.POST["attend_hour"]
-        attend_minute = request.POST["attend_minute"]
-        leave_hour = request.POST["leave_hour"]
-        leave_minute = request.POST["leave_minute"]
-        more_hours = request.POST["more_hours"]
-        more_minutes = request.POST["more_minutes"]
-        less_hours = request.POST["less_hours"]
-        less_minutes = request.POST["less_minutes"]
-        total_hours = request.POST["total_hours"]
-        total_minutes = request.POST["total_minutes"]
-        note = request.POST["note"]
-
-        data = {
-            "employee": employee,
-            "month": month,
-            "year": year,
-            "title": title,
-            "required_hours": required_hours,
-            "required_minutes": required_minutes,
-            "attend_hour": attend_hour,
-            "attend_minute": attend_minute,
-            "leave_hour": leave_hour,
-            "leave_minute": leave_minute,
-            "more_hours": more_hours,
-            "more_minutes": more_minutes,
-            "less_hours": less_hours,
-            "less_minutes": less_minutes,
-            "total_hours": total_hours,
-            "total_minutes": total_minutes,
-            "note": note,
-        }
-
-        form = DayForm(data)
+        form = DayForm(request.POST)
 
         if form.is_valid():
             form.save()
@@ -164,3 +134,14 @@ def addDay(request, groupId, employeeId, yearId, monthId):
             return redirect("main:index")
             
 
+
+def initMonth(request, groupId):
+    if request.method == "POST":
+        form = MonthForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("main:employees", groupId)
+        else:
+            return redirect("main:index")
+        

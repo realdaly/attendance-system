@@ -9,7 +9,7 @@
     </svg>
 </span>
 
-<a href="{% url 'main:employees' group.id %}" class="flex items-center text-orange-400 hover:bg-orange-400 hover:text-white rounded-full p-2 transition-all font-bold">
+<a href="{% url 'main:employees' group.id %}" class="flex items-center text-orange-400 hover:bg-orange-400 hover:text-white rounded p-2 transition-all font-bold">
     <svg class="w-6 h-6 mx-2" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
         <path d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0H21.3C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z"></path>
     </svg>
@@ -24,7 +24,7 @@
     </svg>
 </span>
 
-<a href="" class="flex items-center text-orange-400 hover:bg-orange-400 hover:text-white rounded-full p-2 transition-all font-bold">
+<a href="" class="flex items-center text-orange-400 hover:bg-orange-400 hover:text-white rounded p-2 transition-all font-bold">
     <svg class="w-6 h-6 mx-2" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
         <path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm2 96a72 72 0 11-72 72 72 72 0 0172-72zm-2 288a175.55 175.55 0 01-129.18-56.6C135.66 329.62 215.06 320 256 320s120.34 9.62 129.18 55.39A175.52 175.52 0 01256 432z"></path>
     </svg>
@@ -37,16 +37,15 @@
 
 
 {% block body %}
-<div class="container mx-auto px-4 sm:px-8" x-data="{ modalOpen: false }">
+<div class="mx-auto" x-data="{ modalOpen: false }">
     <div class="py-8">
         <div>
-            <h2 class="text-2xl font-semibold leading-tight">Users</h2>
+            <h2 class="text-2xl mb-4 font-semibold leading-tight">{{ employee.name }}</h2>
         </div>
 
 
         <div class="my-2 justify-between flex sm:flex-row flex-col">
             <div class="flex flex-row mb-1 sm:mb-0">
-
                 <!-- Years dropdown -->
                 <div
                     x-data="{ dropdownOpen: false}"
@@ -73,7 +72,7 @@
                     </button>
                     <div
                         :class="dropdownOpen ? 'top-full opacity-100 visible' : 'top-[110%] invisible opacity-0' "
-                        class="absolute right-0 z-10 mt-2 w-full rounded border bg-white transition-all"
+                        class="absolute min-w-max right-0 z-10 mt-2 w-full rounded border bg-white transition-all"
                     >
                         {% for year in employee.years.all %}
                             {% if year.id != current_year.id %}
@@ -87,7 +86,7 @@
                                 {% else %}
                                 <span
                                     @click="modalOpen = true"
-                                    onclick="addMonth()"
+                                    onclick="addMonthBefore()"
                                     class="hover:bg-orange-400 cursor-pointer hover:text-orange-400 block py-2 px-5 font-semibold hover:bg-opacity-5"
                                 >
                                     {{ year.title }}
@@ -100,7 +99,7 @@
                             {% endif %}
                         {% endfor %}
                         <span
-                            class="py-2 text-black hover:text-gray-600 flex items-center gap-x-2 justify-center"
+                            class="py-2 cursor-pointer text-black hover:text-gray-600 flex items-center gap-x-2 justify-center"
                             @click="modalOpen = true"
                             onclick="addYear()"
                         >
@@ -138,7 +137,7 @@
                     </button>
                     <div
                         :class="dropdownOpen ? 'top-full opacity-100 visible' : 'top-[110%] invisible opacity-0' "
-                        class="absolute right-0 z-10 mt-2 w-full rounded border bg-white transition-all"
+                        class="absolute right-0 min-w-max z-10 mt-2 w-full rounded border bg-white transition-all"
                     >
                         {% for month in current_year.months.all %}
                             {% if month.id != current_month.id %}
@@ -154,13 +153,23 @@
                             </span>
                             {% endif %}
                         {% endfor %}
+                        <span
+                            class="py-2 text-black cursor-pointer hover:text-gray-600 flex items-center gap-x-2 justify-center"
+                            @click="modalOpen = true"
+                            onclick="addMonth()"
+                        >
+                            <button class="py-2 rounded-md text-sm font-semibold hover:bg-opacity-75">
+                                إضافة
+                            </button>
+                            <svg  class="fill-current font-bold" width="17" height="17" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
+                        </span>
                     </div>
                 </div>                  
             </div>
 
             <button
                 @click="modalOpen = true"
-                class="bg-orange-400 flex items-center rounded py-3 px-5 font-semibold text-white"
+                class="bg-orange-400 flex items-center rounded py-3 px-5 font-semibold text-white hover:bg-opacity-75 transition-all"
                 onclick="addDay()"
             >
                 إضافة يوم
@@ -219,6 +228,7 @@
                                         بدون عنوان
                                     {% endif %}
                                 </p>
+                                {{ day.date_day }}/{{ day.date_month }}/{{ current_year.title }}
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
@@ -370,12 +380,14 @@
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     {% include "main/components/Modal.html" %}
 </div>
 
 <script>
     const modal = document.getElementById("modal")
+    const date = new Date()
 
     function addYear(){
             modal.innerHTML = 
@@ -386,7 +398,7 @@
             <form action={% url 'main:addYear' group.id %} method="POST">
                 {% csrf_token %}
                 <input
-                    class="w-full max-w-xl px-4 py-2 border rounded-md dark:bg-darker dark:border-gray-700 focus:outline-none focus:ring focus:ring-primary-100 dark:focus:ring-primary-darker" 
+                    class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                     type="text" 
                     placeholder="عنوان السنة، 2023 مثلاً" 
                     required=""
@@ -411,7 +423,7 @@
                     <div class="w-1/6 px-3">
                         <button
                             type="submit"
-                            class="block w-full p-3 text-base font-bold text-center transition border rounded-lg bg-primary border-primary hover:bg-opacity-90"
+                            class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
                         >
                             تم
                         </button>
@@ -423,39 +435,46 @@
     function addMonth(){
         modal.innerHTML = 
         `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
-            أضف شهر قبل الانتقال إلى السنة
+            إضافة شهر إلى {{ current_year.title }}
         </h3>
     
-        <input
-            class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
-            type="text" 
-            placeholder="اكتب العنوان هنا" 
-            required=""
-            id="adminTitle"
-            x-ref="input"
-            x-on:keydown.enter="document.getElementById('title').value = document.getElementById('adminTitle').value;document.getElementById('generalForm').submit()"
-        >
-        
-        <div class="flex flex-wrap justify-center mt-5 -mx-3">
-            <div class="w-1/6 px-3">
-                <button
-                    @click="modalOpen = false"
-                    class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
-                >
-                    إلغاء
-                </button>
-            </div>
-            <div class="w-1/6 px-3">
-                <button
-                    class="block w-full p-3 text-base font-bold text-center transition border rounded-lg bg-primary border-primary hover:bg-opacity-90"
-                    x-on:click="document.getElementById('title').value = document.getElementById('adminTitle').value;document.getElementById('generalForm').submit()"
-                >
-                    تم
-                </button>
-            </div>
-        </div>`
-    }
+        <form action={% url 'main:addMonth' group.id employee.id current_year.id current_month.id  %} method="POST">
+            {% csrf_token %}
+            <input
+                class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                type="text" 
+                placeholder="عنوان الشهر، الشهر العاشر مثلاً" 
+                required=""
+                x-ref="input"
+                name="title"
+            >
+            <input class="hidden" name="employee" value="{{ employee.id }}" hidden>
+            <input class="hidden" name="year" value="{{ current_year.id }}" hidden>
+            <input class="hidden" name="more_hours" value="0" hidden>
+            <input class="hidden" name="more_minutes" value="0" hidden>
+            <input class="hidden" name="less_hours" value="0" hidden>
+            <input class="hidden" name="less_minutes" value="0" hidden>
 
+            <div class="flex flex-wrap justify-center mt-5 -mx-3">
+                <div class="w-1/6 px-3">
+                    <button
+                        @click="modalOpen = false"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                    >
+                        إلغاء
+                    </button>
+                </div>
+                <div class="w-1/6 px-3">
+                    <button
+                        type="submit"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                    >
+                        تم
+                    </button>
+                </div>
+            </div>
+        </form>`
+    }
 
     function addDay(){
             modal.innerHTML = 
@@ -466,7 +485,7 @@
             <form class="flex flex-col gap-y-3" action={% url 'main:addDay' group.id employee.id current_year.id current_month.id %} method="POST">
                 {% csrf_token %}
                 <input
-                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                     type="text" 
                     placeholder="عنوان اليوم، الثلاثاء مثلاً" 
                     required=""
@@ -478,13 +497,13 @@
                     <p class="font-semibold">الحضور:</p>
                     <div class="flex justify-center items-center gap-x-3">
                         <input
-                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                             placeholder="الساعة" 
                             required=""
                             name="attend_hour"
                         >
                         <input
-                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                             placeholder="الدقيقة" 
                             required=""
                             name="attend_minute"
@@ -497,20 +516,43 @@
                     <p class="font-semibold">الانصراف:</p>
                     <div class="flex justify-center items-center gap-x-3">
                         <input
-                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                             placeholder="الساعة" 
                             required=""
                             name="leave_hour"
                         >
                         <input
-                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100" 
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                             placeholder="الدقيقة" 
                             required=""
                             name="leave_minute"
                         >
                     </div>
                 </div>
-                <textarea class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary-100 mt-3 resize-none" name="note" value="" placeholder="كتابة الملاحظات" rows="4"></textarea>
+
+                <div class="flex flex-col items-right justify-center gap-3">
+                    <p class="font-semibold">التاريخ:</p>
+                    <div class="flex justify-center items-center gap-x-3">
+                        <input
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                            type="text" 
+                            placeholder="اليوم" 
+                            required=""
+                            name="date_day"
+                            value="{% now "d" %}"
+                        >
+                        <input
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                            type="text" 
+                            placeholder="الشهر" 
+                            required=""
+                            name="date_month"
+                            value="{% now "n" %}"
+                        >
+                    </div>
+                </div>
+                
+                <textarea class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring mt-3 resize-none" name="note" value="" placeholder="كتابة الملاحظات" rows="4"></textarea>
 
 
                 <input class="hidden" name="employee" value="{{ employee.id }}" hidden>
@@ -538,7 +580,7 @@
                     <div class="w-1/6 px-3">
                         <button
                             type="submit"
-                            class="block w-full p-3 text-base font-bold text-center transition border rounded-lg bg-primary border-primary hover:bg-opacity-90"
+                            class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
                         >
                             تم
                         </button>
@@ -554,6 +596,39 @@
             </h3>
             <div>${note}</div>
             `
+    }
+
+    function addMonthBefore(){
+        modal.innerHTML = 
+        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+            أضف شهر قبل الانتقال إلى السنة
+        </h3>
+    
+        <input
+            class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+            type="text" 
+            placeholder="اكتب العنوان هنا" 
+            required=""
+            x-ref="input"
+        >
+        
+        <div class="flex flex-wrap justify-center mt-5 -mx-3">
+            <div class="w-1/6 px-3">
+                <button
+                    @click="modalOpen = false"
+                    class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                >
+                    إلغاء
+                </button>
+            </div>
+            <div class="w-1/6 px-3">
+                <button
+                    class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                >
+                    تم
+                </button>
+            </div>
+        </div>`
     }
 </script>
 
