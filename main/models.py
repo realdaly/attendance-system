@@ -1,19 +1,6 @@
 from django.db import models
 from django.db.models import F
 
-class Image(models.Model):
-    image = models.ImageField(upload_to="images", blank=False)
-    title = models.CharField(max_length=250, null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.id}"
-    
-    def save(self, *args, **kwargs):
-        if not self.title:
-            filename = self.image.name
-            self.title = filename.split('.')[0]
-        
-        super().save(*args, **kwargs)
 
 class Group(models.Model):
     title = models.CharField(max_length=255, default="مجموعة بدون عنوان")
@@ -28,8 +15,8 @@ class Group(models.Model):
 
 class Employee(models.Model):
     name = models.CharField(max_length=255, default="موظف بدون أسم")
+    image = models.ImageField(upload_to="images", null=True, blank=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="employees", null=True, blank=True)
-    main_img = main_img = models.ForeignKey(Image, default=0, on_delete=models.PROTECT, related_name="employees")
     order = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -80,7 +67,7 @@ class Year(models.Model):
             self.less_hours = 0
         else:
             self.more_hours = 0
-            self.more_minutes = 0
+            self.less_hours = 0
 
         if result_minutes < 0:
             self.less_minutes = abs(result_minutes)

@@ -14,19 +14,6 @@ def index(request):
     return render (request, "main/index.html", context)
 
 
-def images(request):
-    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
-    imgs_per_fetch = 5
-
-    if is_ajax:
-        if request.method == "GET":
-            skip = int(request.GET.get("skip", 0))
-            images = Image.objects.all().values()[skip:skip + imgs_per_fetch]
-            
-            return JsonResponse({"context": list(images)})
-        return JsonResponse({"status": "Invalid request"}, status=400)
-
-
 
 def employees(request, groupId):
     media_path = request.build_absolute_uri("/media/")
@@ -88,7 +75,7 @@ def addGroup(request):
 
 def addEmployee(request, groupId):
     if request.method == "POST":
-        form = EmployeeForm(request.POST)
+        form = EmployeeForm(request.POST, request.FILES)
 
         if form.is_valid():
             form.save()

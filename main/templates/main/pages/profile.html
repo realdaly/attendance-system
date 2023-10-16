@@ -71,7 +71,12 @@
                     </span>
                     </button>
                     <div
-                        :class="dropdownOpen ? 'top-full opacity-100 visible' : 'top-[110%] invisible opacity-0' "
+                        x-show="dropdownOpen"
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                        :class="dropdownOpen ? 'top-full' : 'top-[110%]' "
                         class="absolute min-w-max right-0 z-10 mt-2 w-full rounded border bg-white transition-all"
                     >
                         {% for year in employee.years.all %}
@@ -136,7 +141,12 @@
                     </span>
                     </button>
                     <div
-                        :class="dropdownOpen ? 'top-full opacity-100 visible' : 'top-[110%] invisible opacity-0' "
+                        x-show="dropdownOpen"
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                        :class="dropdownOpen ? 'top-full' : 'top-[110%]' "
                         class="absolute right-0 min-w-max z-10 mt-2 w-full rounded border bg-white transition-all"
                     >
                         {% for month in current_year.months.all %}
@@ -326,57 +336,112 @@
             </div>
         </div>
 
-        <!-- Month results table -->
-        <div class="mx-auto flex justify-center sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-            <div class="inline-block shadow rounded-lg overflow-hidden">
-                <table class="min-w-full leading-normal">
-                    <thead>
-                        <tr>
-                            <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-lg font-semibold text-gray-600">
-                                المجموع لشهر {{ current_month.title }}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-
-                                <p class="mb-2">الزيادة بالوقت: </p>
-                                <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                                    <span class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                                    <span class="relative">
-                                        <p class="text-gray-900 whitespace-no-wrap"> 
-                                            <span class="font-bold">{{ current_month.more_hours }}</span>
-                                            ساعة و 
-                                            <span class="font-bold">{{ current_month.more_minutes }}</span>
-                                            دقيقة
-                                        </p>
+        <div class="flex items-center justify-start gap-10">
+            <!-- Month results table -->
+            <div class="mx-auto flex justify-center sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                <div class="inline-block shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full leading-normal">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-lg font-semibold text-gray-600">
+                                    المجموع الشهري - {{ current_month.title }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="px-5 py-5 gap-x-3 flex items-center border-b border-gray-200 bg-white text-sm">
+                                    <p class="font-semibold">الزيادة بالوقت: </p>
+                                    <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                                        <span class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                                        <span class="relative">
+                                            <p class="text-gray-900 whitespace-no-wrap"> 
+                                                <span class="font-bold">{{ current_month.more_hours }}</span>
+                                                ساعة و 
+                                                <span class="font-bold">{{ current_month.more_minutes }}</span>
+                                                دقيقة
+                                            </p>
+                                        </span>
                                     </span>
-                                </span>
-                                
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                <p class="mb-2">النقيصة بالوقت: </p>
-                                <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
-                                    <span class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
-                                    <span class="relative">
-                                        <p class="text-gray-900 whitespace-no-wrap"> 
-                                            <span class="font-bold">{{ current_month.less_hours }}</span>
-                                            ساعة و 
-                                            <span class="font-bold">{{ current_month.less_minutes }}</span>
-                                            دقيقة
-                                        </p>
+                                    
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="px-5 flex items-center gap-x-3 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="font-semibold">النقيصة بالوقت: </p>
+                                    <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
+                                        <span class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+                                        <span class="relative">
+                                            <p class="text-gray-900 whitespace-no-wrap"> 
+                                                <span class="font-bold">{{ current_month.less_hours }}</span>
+                                                ساعة و 
+                                                <span class="font-bold">{{ current_month.less_minutes }}</span>
+                                                دقيقة
+                                            </p>
+                                        </span>
                                     </span>
-                                </span>
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
+                                </td>
+                            </tr>
+    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+    
+            <!-- Year results table -->
+            <div class="mx-auto flex justify-center sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                <div class="inline-block shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full leading-normal">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-lg font-semibold text-gray-600">
+                                    المجموع السنوي - {{ current_year.title }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="px-5 py-5 gap-x-3 flex items-center border-b border-gray-200 bg-white text-sm">
+                                    <p class="font-semibold">الزيادة بالوقت: </p>
+                                    <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                                        <span class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                                        <span class="relative">
+                                            <p class="text-gray-900 whitespace-no-wrap"> 
+                                                <span class="font-bold">{{ current_year.more_hours }}</span>
+                                                ساعة و 
+                                                <span class="font-bold">{{ current_year.more_minutes }}</span>
+                                                دقيقة
+                                            </p>
+                                        </span>
+                                    </span>
+                                    
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="px-5 flex items-center gap-x-3 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <p class="font-semibold">النقيصة بالوقت: </p>
+                                    <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
+                                        <span class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+                                        <span class="relative">
+                                            <p class="text-gray-900 whitespace-no-wrap"> 
+                                                <span class="font-bold">{{ current_year.less_hours }}</span>
+                                                ساعة و 
+                                                <span class="font-bold">{{ current_year.less_minutes }}</span>
+                                                دقيقة
+                                            </p>
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+    
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

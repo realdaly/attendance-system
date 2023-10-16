@@ -1,4 +1,5 @@
 {% extends "main/layout.html" %}
+{% load static %}
 
 
 {% block breadcrump %}
@@ -31,11 +32,19 @@
             <svg  class="fill-current font-bold" width="20" height="20" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
         </span>
     </button>
-    <div class="flex h-screen flex-wrap items-center justify-center gap-5">
+    <div class="flex py-5 min-h-full flex-wrap items-start justify-center gap-5">
         {% for employee in employees %}
-        <div class="flex gap-y-5 flex-col items-center justify-center p-10 rounded-lg shadow-md">
-            <div class="overflow-hidden rounded-full w-28">
-                <img class="w-full h-full object-cover object-center" src="{{ employee.main_img.image.url }}" alt="{{ employee.name }}">
+        <div title="{{ employee.name }}" class="flex gap-y-5 flex-col items-center justify-center p-10 rounded-lg shadow-md">
+            <div class="overflow-hidden rounded-full w-28 h-28">
+                <img 
+                    class="w-full h-full object-cover object-center" 
+                    {% if employee.image %}
+                        src="{{ employee.image.url }}" 
+                    {% else %}
+                        src="{% static 'images/default.png' %}"
+                    {% endif %}
+                    alt="{{ employee.name }}"
+                >
             </div>
             <h1 class="text-xl mb-5 font-bold">
                 {{ employee.name }}
@@ -178,7 +187,7 @@
             إضافة موظف
         </h3>
 
-        <form class="flex flex-col justify-center gap-y-3" action={% url 'main:addEmployee' group.id %} method="POST">
+        <form class="flex flex-col justify-center gap-y-3" action={% url 'main:addEmployee' group.id %} method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             
 
@@ -200,19 +209,21 @@
                     value=""
                 >
             </div>
-            <div class="flex justify-start items-center">
-                <p 
-                    onclick="fetchAndInsertImages()"
+            <div class="flex justify-start gap-x-5 items-center">
+                <input class="hidden" hidden type="file" name="image" id="actual_btn" accept=".gif,.jpg,.jpeg,.png">
+                <label 
+                    onclick=""
+                    for="actual_btn"
+                    id="fake_btn"
                     class="bg-orange-400 flex cursor-pointer select-none items-center rounded py-3 px-5 font-semibold text-white hover:bg-opacity-75 transition-all"
                 >
                     إضافة صورة
                     <span class="pr-2">
                         <svg  class="fill-current font-bold" width="20" height="20" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
                     </span>
-                </p>    
+                </label>
+                <img id="imgPreview" class="w-20 rounded-md" src="">
             </div>
-
-            <div id="imagesContainer" class="flex mx-auto flex-wrap max-w-[40rem] items-start justify-center gap-4 py-2"></div>
 
             <div class="mt-4 flex justify-center">
                 <p
@@ -246,49 +257,14 @@
                 </div>
             </div>
         </form>`
-    }
+        const actual_btn = document.getElementById("actual_btn")
 
-
-    async function fetchAndInsertImages(){
-        document.getElementById("loadMore").classList.remove("hidden")
-        let url = `{% url 'main:images' %}?skip=${skip}`
-        let options = {
-            method: "GET",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-            }
-        }
-
-        try {
-            const response = await fetch(url, options)
-            imagesData = await response.json()
-
-            imagesData.context.forEach(image => {
-                document.getElementById("imagesContainer").innerHTML += 
-                `<div class="flex flex-col gap-y-2 w-36">
-                    <div 
-                        class="h-24 overflow-hidden transition-all border rounded-md cursor-pointer image hover:scale-110 w-36"
-                        onclick="selectImage(this);document.getElementById('logo').value = this.querySelector('img').alt"
-                    >
-                        <img class="object-cover object-center w-full h-full" src="{{ media_path }}${image.image}" alt="${image.id}">
-                    </div>
-                    <p class="line-clamp-2">${image.title}</p>
-                </div>`
-            })
-        } catch (error) {
-            console.error("Error fetching images:", error)
-        }
-    }
-
-    function loadMoreImages() {
-        skip += 5
-        fetchAndInsertImages()
-    }
-
-    function selectImage(image){
-        const images = document.querySelectorAll(".image")
-        images.forEach(item => item.classList.remove("border-red-500", "scale-110", "border-2"))
-        image.classList.add("border-red-500", "scale-110", "border-2")
+        actual_btn.addEventListener("change", 
+        function(){
+            const [file] = actual_btn.files
+            document.getElementById("fake_btn").innerHTML = file.name
+            document.getElementById("imgPreview").src = URL.createObjectURL(file)
+        }) 
     }
 </script>
 {% endblock %}
