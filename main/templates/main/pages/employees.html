@@ -34,8 +34,12 @@
     </button>
     <div class="flex py-5 min-h-full flex-wrap items-start justify-center gap-5">
         {% for employee in employees %}
-        <div title="{{ employee.name }}" class="flex gap-y-5 flex-col items-center justify-center p-10 rounded-lg shadow-md">
-            <div class="overflow-hidden rounded-full w-28 h-28">
+        <div 
+            x-data="{ optionsOpen: false}"
+            title="{{ employee.name }}" 
+            class="flex flex-col bg-white items-center justify-center p-10 px-16 relative rounded-lg shadow-md"
+        >
+            <div class="overflow-hidden rounded-full w-28 mb-3 h-28">
                 <img 
                     class="w-full h-full object-cover object-center" 
                     {% if employee.image %}
@@ -77,6 +81,59 @@
                 <button class="bg-orange-400 text-white py-3 px-8 rounded text-sm font-semibold hover:bg-opacity-75 transition-all">عرض التفاصيل</button>
             </a>
             {% endif %}
+
+            <!-- Options button -->
+            <div
+                @click.outside="optionsOpen = false"
+                @click="optionsOpen = !optionsOpen"
+                class="text-orange-400 absolute top-0 py-3 px-1 cursor-pointer left-0"
+            >
+                <div class="rounded-full transition-all hover:bg-gray-100">
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="2rem" width="2rem" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Options menu -->
+            <div 
+                x-show="optionsOpen"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                :class="optionsOpen ? 'mt-5' : 'mt-0' "
+                class="absolute top-7 z-10 mt-2 -left-7 rounded border bg-white transition-all"
+            >
+                    <div 
+                        @click="modalOpen = true"
+                        onclick=
+                            "updateEmployee(
+                                    '{% url 'main:updateEmployee' group.id employee.id %}',
+                                    '{{ employee.name }}', 
+                                    '{{ employee.order }}', 
+                                    {% if employee.image %}
+                                        'تغيير الصورة',
+                                        '{{ employee.image.url }}'
+                                        {% else %} 
+                                        'الصورة الافتراضية',
+                                        '{% static 'images/default.png' %}'
+                                    {% endif %} 
+                            )"
+                        class="flex items-center justify-start gap-x-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    >
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
+                        <span>تعديل</span>
+                    </div>
+                    <div 
+                        @click="modalOpen = true"
+                        onclick="deleteEmployee('{% url 'main:deleteEmployee' group.id employee.id %}')"
+                        class="flex items-center gap-x-2 px-4 text-red-400 py-2 cursor-pointer hover:bg-gray-100"
+                    >
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
+                        <span>حــذف</span>
+                    </div>
+            </div>
         </div>
         {% empty %}
         لا توجد بيانات.
@@ -225,17 +282,7 @@
                 <img id="imgPreview" class="w-20 rounded-md" src="">
             </div>
 
-            <div class="mt-4 flex justify-center">
-                <p
-                    id="loadMore"
-                    onclick="loadMoreImages()"
-                    class="hidden cursor-pointer px-4 py-2 mx-auto text-base text-center text-white bg-gray-900 rounded-lg hover:bg-opacity-90 focus:outline-none focus:shadow-outline"
-                >
-                    تحميل المزيد
-                </p>
-            </div>
 
-            <input class="hidden" name="main_img" id="main_img" value="1" hidden>
             <input class="hidden" name="group" value="{{ group.id }}" hidden>
 
             <div class="flex flex-wrap justify-center mt-3 -mx-3">
@@ -265,6 +312,113 @@
             document.getElementById("fake_btn").innerHTML = file.name
             document.getElementById("imgPreview").src = URL.createObjectURL(file)
         }) 
+    }
+
+    function updateEmployee(url, name, order, imgTitle, imgSrc){
+        modal.innerHTML = 
+        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+            تعديل معلومات
+        </h3>
+
+        <form class="flex flex-col justify-center gap-y-3" action=${url} method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+
+            <div class="flex justify-center items-center gap-x-3">
+                <input
+                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                    type="text" 
+                    placeholder="اسم الموظف" 
+                    required=""
+                    x-ref="input"
+                    name="name"
+                    value="${name}"
+                >
+                <input
+                    class="w-1/5 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                    type="number" 
+                    placeholder="التسلسل" 
+                    required=""
+                    name="order"
+                    value="${order}"
+                >
+            </div>
+            <div class="flex justify-start gap-x-5 items-center">
+                <input class="hidden" hidden type="file" name="image" id="actual_btn" accept=".gif,.jpg,.jpeg,.png">
+                <label 
+                    onclick=""
+                    for="actual_btn"
+                    id="fake_btn"
+                    class="bg-orange-400 flex cursor-pointer select-none items-center rounded py-3 px-5 font-semibold text-white hover:bg-opacity-75 transition-all"
+                >
+                    ${imgTitle}
+                    <span class="pr-2">
+                        <svg  class="fill-current font-bold" width="20" height="20" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
+                    </span>
+                </label>
+                <div class="w-28 h-20 overflow-hidden rounded-md">
+                    <img id="imgPreview" class="w-full h-full object-cover object-center" src="${imgSrc}">
+                </div>
+            </div>
+
+            <input class="hidden" name="group" value="{{ group.id }}" hidden>
+
+            <div class="flex flex-wrap justify-center mt-3 -mx-3">
+                <div class="w-1/6 px-3">
+                    <button
+                        @click="modalOpen = false"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                    >
+                        إلغاء
+                    </button>
+                </div>
+                <div class="w-1/6 px-3">
+                    <button
+                        type="submit"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                    >
+                        تم
+                    </button>
+                </div>
+            </div>
+        </form>`
+        const actual_btn = document.getElementById("actual_btn")
+
+        actual_btn.addEventListener("change", 
+        function(){
+            const [file] = actual_btn.files
+            document.getElementById("fake_btn").innerHTML = file.name
+            document.getElementById("imgPreview").src = URL.createObjectURL(file)
+        }) 
+    }
+
+    function deleteEmployee(url){
+        modal.innerHTML = 
+        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+            هل أنت متأكد؟
+        </h3>
+
+        <form class="flex flex-col gap-y-3" action="${url}" method="POST">
+            {% csrf_token %}
+            <div class="flex flex-wrap justify-center mt-3 -mx-3">
+                <div class="w-1/6 px-3">
+                    <p
+                        @click="modalOpen = false"
+                        class="block w-full p-3 cursor-pointer text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                    >
+                        إلغاء
+                    </p>
+                </div>
+                <div class="w-1/6 px-3">
+                    <button
+                        type="submit"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                    >
+                        تم
+                    </button>
+                </div>
+            </div>
+        </form>`
     }
 </script>
 {% endblock %}

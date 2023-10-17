@@ -12,10 +12,11 @@
             <svg  class="fill-current font-bold" width="20" height="20" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
         </span>
     </button>
-    <div class="flex h-screen flex-wrap items-start pt-36 justify-center gap-5">
+    <div class="flex py-5 min-h-full flex-wrap items-start justify-center gap-5">
         {% for group in groups %}
         <div 
             x-data="{ optionsOpen: false}"
+            title="{{ group.title }}"
             class="flex flex-col bg-white items-center justify-center p-10 px-16 relative rounded-lg shadow-md"
         >
             <h1 class="text-xl font-bold">
@@ -38,6 +39,7 @@
             </a>
             <div
                 @click.outside="optionsOpen = false"
+                @click="optionsOpen = !optionsOpen"
                 class="text-orange-400 absolute top-0 py-3 px-1 cursor-pointer left-0"
             >
                 <div class="rounded-full transition-all hover:bg-gray-100">
@@ -45,6 +47,38 @@
                         <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
                     </svg>
                 </div>
+            </div>
+            <div 
+                x-show="optionsOpen"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                :class="optionsOpen ? 'mt-5' : 'mt-0' "
+                class="absolute top-7 z-10 mt-2 -left-7 rounded border bg-white transition-all"
+            >
+                    <div 
+                        @click="modalOpen = true"
+                        onclick=
+                            "updateGroup(
+                                    '{{ group.title }}', 
+                                    '{{ group.required_hours }}', 
+                                    '{{ group.required_minutes }}',
+                                    '{% url 'main:updateGroup' group.id %}'
+                            )"
+                        class="flex items-center justify-start gap-x-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    >
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
+                        <span>تعديل</span>
+                    </div>
+                    <div 
+                        @click="modalOpen = true"
+                        onclick="deleteGroup('{% url 'main:deleteGroup' group.id %}')"
+                        class="flex items-center gap-x-2 px-4 text-red-400 py-2 cursor-pointer hover:bg-gray-100"
+                    >
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
+                        <span>حــذف</span>
+                    </div>
             </div>
         </div>
         {% empty %}
@@ -74,6 +108,7 @@
                 required=""
                 x-ref="input"
                 name="title"
+                value=""
             >
 
             <div class="flex flex-col items-right justify-center gap-3">
@@ -97,12 +132,101 @@
 
             <div class="flex flex-wrap justify-center mt-3 -mx-3">
                 <div class="w-1/6 px-3">
-                    <button
+                    <p
                         @click="modalOpen = false"
                         class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
                     >
                         إلغاء
+                    </p>
+                </div>
+                <div class="w-1/6 px-3">
+                    <button
+                        type="submit"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                    >
+                        تم
                     </button>
+                </div>
+            </div>
+        </form>`
+    }
+
+    function updateGroup(title, required_hours, required_minutes, url){
+        modal.innerHTML = 
+        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+            تعديل معلومات النظام 
+        </h3>
+
+        <form class="flex flex-col gap-y-3" action="${url}" method="POST">
+            {% csrf_token %}
+            <input
+                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                type="text" 
+                placeholder="العنوان، نظام 4 ساعات مثلا" 
+                required=""
+                x-ref="input"
+                value="${title}"
+                name="title"
+            >
+
+            <div class="flex flex-col items-right justify-center gap-3">
+                <p class="font-semibold">الوقت المطلوب:</p>
+                <div class="flex justify-center items-center gap-x-3">
+                    <input
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        placeholder="الساعات المطلوبة" 
+                        required=""
+                        name="required_hours"
+                        value="${required_hours}"
+                    >
+                    <input
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        placeholder="الدقائق المطلوبة" 
+                        required=""
+                        name="required_minutes"
+                        value="${required_minutes}"
+                    >
+                </div>
+                
+            </div>
+
+            <div class="flex flex-wrap justify-center mt-3 -mx-3">
+                <div class="w-1/6 px-3">
+                    <p
+                        @click="modalOpen = false"
+                        class="block w-full p-3 cursor-pointer text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                    >
+                        إلغاء
+                    </p>
+                </div>
+                <div class="w-1/6 px-3">
+                    <button
+                        type="submit"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                    >
+                        تم
+                    </button>
+                </div>
+            </div>
+        </form>`
+    }
+
+    function deleteGroup(url){
+        modal.innerHTML = 
+        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+            هل أنت متأكد؟
+        </h3>
+
+        <form class="flex flex-col gap-y-3" action="${url}" method="POST">
+            {% csrf_token %}
+            <div class="flex flex-wrap justify-center mt-3 -mx-3">
+                <div class="w-1/6 px-3">
+                    <p
+                        @click="modalOpen = false"
+                        class="block w-full p-3 cursor-pointer text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                    >
+                        إلغاء
+                    </p>
                 </div>
                 <div class="w-1/6 px-3">
                     <button

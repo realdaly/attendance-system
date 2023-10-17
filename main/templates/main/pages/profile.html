@@ -82,24 +82,112 @@
                         {% for year in employee.years.all %}
                             {% if year.id != current_year.id %}
                                 {% if year.months %}
-                                <a
-                                    href="{% url 'main:profile' employee.group.id employee.id year.id year.months.first.id %}"
-                                    class="hover:bg-orange-400 hover:text-orange-400 block py-2 px-5 font-semibold hover:bg-opacity-5"
+                                <div 
+                                    x-data="{ optionsOpen{{ year.id }}: false}"
+                                    class="flex items-center justify-between hover:bg-orange-400 hover:text-orange-400 py-2 px-3 font-semibold hover:bg-opacity-5"
                                 >
-                                    {{ year.title }}
-                                </a>
+                                    <a href="{% url 'main:profile' employee.group.id employee.id year.id year.months.first.id %}">
+                                        {{ year.title }}
+                                    </a>
+
+                                    <!-- Options button -->
+                                    <div
+                                        @click.outside="optionsOpen{{ year.id }} = false"
+                                        @click="optionsOpen{{ year.id }} = !optionsOpen{{ year.id }}"
+                                        class="text-orange-400 cursor-pointer"
+                                    >
+                                        <div class="rounded-full transition-all hover:bg-gray-100">
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Options menu -->
+                                    <div 
+                                        x-show="optionsOpen{{ year.id }}"
+                                        x-transition:enter-start="opacity-0"
+                                        x-transition:enter-end="opacity-100"
+                                        x-transition:leave-start="opacity-100"
+                                        x-transition:leave-end="opacity-0"
+                                        :class="optionsOpen{{ year.id }} ? 'mt-5' : 'mt-0' "
+                                        class="absolute top-7 z-10 mt-2 -left-7 rounded border bg-white transition-all"
+                                    >
+                                            <div 
+                                                @click="modalOpen = true"
+                                                onclick=""
+                                                class="flex items-center justify-start gap-x-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                            >
+                                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
+                                                <span>تعديل</span>
+                                            </div>
+                                            <div 
+                                                @click="modalOpen = true"
+                                                onclick="deleteEmployee('{% url 'main:deleteEmployee' group.id employee.id %}')"
+                                                class="flex items-center gap-x-2 px-4 text-red-400 py-2 cursor-pointer hover:bg-gray-100"
+                                            >
+                                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
+                                                <span>حــذف</span>
+                                            </div>
+                                    </div>
+                                </div>
                                 {% else %}
                                 <span
                                     @click="modalOpen = true"
                                     onclick="addMonthBefore()"
-                                    class="hover:bg-orange-400 cursor-pointer hover:text-orange-400 block py-2 px-5 font-semibold hover:bg-opacity-5"
+                                    class="hover:bg-orange-400 cursor-pointer hover:text-orange-400 py-2 px-3 font-semibold hover:bg-opacity-5"
                                 >
                                     {{ year.title }}
                                 </span>
                                 {% endif %}
                             {% else %}
-                            <span class="block py-2 cursor-default bg-orange-400 bg-opacity-5 text-orange-400 px-5 font-semibold">
+                            <span 
+                                x-data="{ optionsOpen: false}"
+                                @click.outside="optionsOpen = false"
+                                class="relative flex items-center justify-between py-2 cursor-default bg-orange-400 bg-opacity-5 text-orange-400 px-3 font-semibold"
+                            >
                                 {{ year.title }}
+
+                                <!-- Options button -->
+                                <div
+                                    @click="optionsOpen = !optionsOpen"
+                                    class="text-orange-400 cursor-pointer"
+                                >
+                                    <div class="rounded-full transition-all hover:bg-gray-100">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Options menu -->
+                                <div 
+                                    x-show="optionsOpen"
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100"
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                    :class="optionsOpen ? 'mt-5' : 'mt-0' "
+                                    class="absolute top-7 z-10 mt-2 -left-7 rounded border bg-white transition-all"
+                                >
+                                        <div 
+                                            @click="modalOpen = true"
+                                            onclick=""
+                                            class="flex items-center justify-start gap-x-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                        >
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
+                                            <span>تعديل</span>
+                                        </div>
+                                        <div 
+                                            @click="modalOpen = true"
+                                            onclick="deleteEmployee('{% url 'main:deleteEmployee' group.id employee.id %}')"
+                                            class="flex items-center gap-x-2 px-4 text-red-400 py-2 cursor-pointer hover:bg-gray-100"
+                                        >
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
+                                            <span>حــذف</span>
+                                        </div>
+                                </div>
+
                             </span>
                             {% endif %}
                         {% endfor %}
@@ -454,6 +542,8 @@
     const modal = document.getElementById("modal")
     const date = new Date()
 
+
+    // ADD
     function addYear(){
             modal.innerHTML = 
             `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
@@ -694,6 +784,52 @@
                 </button>
             </div>
         </div>`
+    }
+
+
+    // UPDATE
+    function updateYear(url, title){
+            modal.innerHTML = 
+            `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+                تعديل معلومات
+            </h3>
+
+            <form action="${url}" method="POST">
+                {% csrf_token %}
+                <input
+                    class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                    type="text" 
+                    placeholder="عنوان السنة، 2023 مثلاً" 
+                    required=""
+                    x-ref="input"
+                    name="title"
+                    value="${title}"
+                >
+                <input class="hidden" name="employee" value="{{ employee.id }}" hidden>
+                <input class="hidden" name="more_hours" value="0" hidden>
+                <input class="hidden" name="more_minutes" value="0" hidden>
+                <input class="hidden" name="less_hours" value="0" hidden>
+                <input class="hidden" name="less_minutes" value="0" hidden>
+
+                <div class="flex flex-wrap justify-center mt-5 -mx-3">
+                    <div class="w-1/6 px-3">
+                        <p
+                            @click="modalOpen = false"
+                            class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        >
+                            إلغاء
+                        </p>
+                    </div>
+                    <div class="w-1/6 px-3">
+                        <button
+                            type="submit"
+                            class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        >
+                            تم
+                        </button>
+                    </div>
+                </div>
+            </form>`
     }
 </script>
 
