@@ -9,7 +9,7 @@
     </svg>
 </span>
 
-<a href="{% url 'main:employees' group.id %}" class="flex items-center text-orange-400 hover:bg-orange-400 hover:text-white rounded p-2 transition-all font-bold">
+<a href="{% url 'main:employees' group.id %}" class="flex items-center p-2 font-bold text-orange-400 transition-all rounded hover:bg-orange-400 hover:text-white">
     <svg class="w-6 h-6 mx-2" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 640 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
         <path d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0H21.3C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z"></path>
     </svg>
@@ -24,7 +24,7 @@
     </svg>
 </span>
 
-<a href="" class="flex items-center text-orange-400 hover:bg-orange-400 hover:text-white rounded p-2 transition-all font-bold">
+<a href="" class="flex items-center p-2 font-bold text-orange-400 transition-all rounded hover:bg-orange-400 hover:text-white">
     <svg class="w-6 h-6 mx-2" stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
         <path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm2 96a72 72 0 11-72 72 72 72 0 0172-72zm-2 288a175.55 175.55 0 01-129.18-56.6C135.66 329.62 215.06 320 256 320s120.34 9.62 129.18 55.39A175.52 175.52 0 01256 432z"></path>
     </svg>
@@ -40,11 +40,11 @@
 <div class="mx-auto" x-data="{ modalOpen: false }">
     <div class="py-8">
         <div>
-            <h2 class="text-2xl mb-4 font-semibold leading-tight">{{ employee.name }}</h2>
+            <h2 class="mb-4 text-2xl font-semibold leading-tight">{{ employee.name }}</h2>
         </div>
 
 
-        <div class="my-2 justify-between flex sm:flex-row flex-col">
+        <div class="flex flex-col justify-between my-2 sm:flex-row">
             <div class="flex flex-row mb-1 sm:mb-0">
                 <!-- Years dropdown -->
                 <div
@@ -56,7 +56,7 @@
                     <!-- Dropdown button -->
                     <button
                         @click="dropdownOpen = !dropdownOpen"
-                        class="bg-orange-400 flex items-center rounded py-3 px-5 font-semibold text-white"
+                        class="flex items-center px-5 py-3 font-semibold text-white bg-orange-400 rounded"
                     >
                         {{ current_year.title }}
                     <span class="pr-2">
@@ -80,14 +80,14 @@
                         x-transition:leave-start="opacity-100"
                         x-transition:leave-end="opacity-0"
                         :class="dropdownOpen ? 'top-full' : 'top-[110%]' "
-                        class="absolute min-w-max right-0 z-10 mt-2 w-full rounded border bg-white transition-all"
+                        class="absolute right-0 z-10 w-full mt-2 transition-all bg-white border rounded min-w-max"
                     >
                         {% for year in employee.years.all %}
                             {% if year.id != current_year.id %}
-                                {% if year.months|length > 0 %}
+                                {% if year.months.all %}
                                 <div 
                                     x-data="{ optionsOpen{{ year.id }}: false}"
-                                    class="flex relative items-center justify-between hover:bg-orange-400 hover:text-orange-400 py-2 px-3 font-semibold hover:bg-opacity-5"
+                                    class="relative flex items-center justify-between px-3 py-2 font-semibold hover:bg-orange-400 hover:text-orange-400 hover:bg-opacity-5"
                                 >
                                     <a href="{% url 'main:profile' employee.group.id employee.id year.id year.months.first.id %}">
                                         {{ year.title }}
@@ -99,7 +99,7 @@
                                         @click="optionsOpen{{ year.id }} = !optionsOpen{{ year.id }}"
                                         class="text-orange-400 cursor-pointer"
                                     >
-                                        <div class="rounded-full transition-all hover:bg-gray-100">
+                                        <div class="transition-all rounded-full hover:bg-gray-100">
                                             <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
                                             </svg>
@@ -114,7 +114,7 @@
                                         x-transition:leave-start="opacity-100"
                                         x-transition:leave-end="opacity-0"
                                         :class="optionsOpen{{ year.id }} ? 'mt-5' : 'mt-0' "
-                                        class="absolute top-5 z-10 mt-2 -left-7 rounded border bg-white transition-all"
+                                        class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
                                     >
                                             <div 
                                                 @click="modalOpen = true"
@@ -122,7 +122,7 @@
                                                     '{% url 'main:updateYear' group.id year.id employee.id current_year.id current_month.id  %}',
                                                     '{{ year.title }}'
                                                 )"
-                                                class="flex text-black items-center justify-start gap-x-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                                class="flex items-center justify-start px-4 py-2 text-black cursor-pointer gap-x-2 hover:bg-gray-100"
                                             >
                                                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
                                                 <span>تعديل</span>
@@ -130,7 +130,7 @@
                                             <div 
                                                 @click="modalOpen = true"
                                                 onclick="deleteYear('{% url 'main:deleteYear' group.id year.id %}')"
-                                                class="flex items-center gap-x-2 px-4 text-red-400 py-2 cursor-pointer hover:bg-gray-100"
+                                                class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
                                             >
                                                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
                                                 <span>حــذف</span>
@@ -144,7 +144,7 @@
                                         '{% url 'main:initMonth' employee.group.id %}',
                                         '{{ year.id }}'
                                     )"
-                                    class="flex relative items-center justify-between hover:bg-orange-400 hover:text-orange-400 py-2 px-3 font-semibold hover:bg-opacity-5 cursor-pointer"
+                                    class="relative flex items-center justify-between px-3 py-2 font-semibold cursor-pointer hover:bg-orange-400 hover:text-orange-400 hover:bg-opacity-5"
                                 >
                                     {{ year.title }}
                                 </span>
@@ -153,7 +153,7 @@
                             <span 
                                 x-data="{ optionsOpen: false}"
                                 @click.outside="optionsOpen = false"
-                                class="relative flex items-center justify-between py-2 cursor-default bg-orange-400 bg-opacity-5 text-orange-400 px-3 font-semibold"
+                                class="relative flex items-center justify-between px-3 py-2 font-semibold text-orange-400 bg-orange-400 cursor-default bg-opacity-5"
                             >
                                 {{ year.title }}
 
@@ -162,7 +162,7 @@
                                     @click="optionsOpen = !optionsOpen"
                                     class="text-orange-400 cursor-pointer"
                                 >
-                                    <div class="rounded-full transition-all hover:bg-gray-100">
+                                    <div class="transition-all rounded-full hover:bg-gray-100">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
                                         </svg>
@@ -177,7 +177,7 @@
                                     x-transition:leave-start="opacity-100"
                                     x-transition:leave-end="opacity-0"
                                     :class="optionsOpen ? 'mt-5' : 'mt-0' "
-                                    class="absolute top-5 z-10 mt-2 -left-7 rounded border bg-white transition-all"
+                                    class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
                                 >
                                         <div 
                                             @click="modalOpen = true"
@@ -185,7 +185,7 @@
                                                     '{% url 'main:updateYear' group.id year.id employee.id current_year.id current_month.id  %}',
                                                     '{{ year.title }}'
                                             )"
-                                            class="flex text-black items-center justify-start gap-x-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                            class="flex items-center justify-start px-4 py-2 text-black cursor-pointer gap-x-2 hover:bg-gray-100"
                                         >
                                             <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
                                             <span>تعديل</span>
@@ -193,7 +193,7 @@
                                         <div 
                                             @click="modalOpen = true"
                                             onclick="deleteYear('{% url 'main:deleteYear' group.id year.id %}')"
-                                            class="flex items-center gap-x-2 px-4 text-red-400 py-2 cursor-pointer hover:bg-gray-100"
+                                            class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
                                         >
                                             <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
                                             <span>حــذف</span>
@@ -204,14 +204,14 @@
                             {% endif %}
                         {% endfor %}
                         <span
-                            class="py-2 cursor-pointer text-black hover:text-gray-600 flex items-center gap-x-2 justify-center"
+                            class="flex items-center justify-center py-2 text-black cursor-pointer hover:text-gray-600 gap-x-2"
                             @click="modalOpen = true"
                             onclick="addYear()"
                         >
-                            <button class="py-2 rounded-md text-sm font-semibold hover:bg-opacity-75">
+                            <button class="py-2 text-sm font-semibold rounded-md hover:bg-opacity-75">
                                 إضافة
                             </button>
-                            <svg  class="fill-current font-bold" width="17" height="17" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
+                            <svg  class="font-bold fill-current" width="17" height="17" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
                         </span>
                     </div>
                 </div>
@@ -226,7 +226,7 @@
                     <!-- Dropdown button -->
                     <button
                         @click="dropdownOpen = !dropdownOpen"
-                        class="bg-orange-400 flex items-center rounded py-3 px-5 font-semibold text-white"
+                        class="flex items-center px-5 py-3 font-semibold text-white bg-orange-400 rounded"
                     >
                         {{ current_month.title }}
                     <span class="pr-2">
@@ -249,13 +249,13 @@
                         x-transition:leave-start="opacity-100"
                         x-transition:leave-end="opacity-0"
                         :class="dropdownOpen ? 'top-full' : 'top-[110%]' "
-                        class="absolute right-0 min-w-max z-10 mt-2 w-full rounded border bg-white transition-all"
+                        class="absolute right-0 z-10 w-full mt-2 transition-all bg-white border rounded min-w-max"
                     >
                         {% for month in current_year.months.all %}
                             {% if month.id != current_month.id %}
                             <div
                                 x-data="{ optionsOpen{{ month.id }}: false}"
-                                class="flex relative items-center justify-between gap-x-3 hover:bg-orange-400 hover:text-orange-400 py-2 px-3 font-semibold hover:bg-opacity-5"
+                                class="relative flex items-center justify-between px-3 py-2 font-semibold gap-x-3 hover:bg-orange-400 hover:text-orange-400 hover:bg-opacity-5"
                             >
                                 <a href="{% url 'main:profile' employee.group.id employee.id current_year.id month.id %}">
                                     {{ month.title }}
@@ -267,7 +267,7 @@
                                     @click="optionsOpen{{ month.id }} = !optionsOpen{{ month.id }}"
                                     class="text-orange-400 cursor-pointer"
                                 >
-                                    <div class="rounded-full transition-all hover:bg-gray-100">
+                                    <div class="transition-all rounded-full hover:bg-gray-100">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
                                         </svg>
@@ -282,7 +282,7 @@
                                     x-transition:leave-start="opacity-100"
                                     x-transition:leave-end="opacity-0"
                                     :class="optionsOpen{{ month.id }} ? 'mt-5' : 'mt-0' "
-                                    class="absolute top-5 z-10 mt-2 -left-7 rounded border bg-white transition-all"
+                                    class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
                                 >
                                     <div 
                                         @click="modalOpen = true"
@@ -290,7 +290,7 @@
                                             '{% url 'main:updateMonth' group.id month.id employee.id current_year.id current_month.id %}',
                                             '{{ month.title }}'
                                         )"
-                                        class="flex text-black items-center justify-start gap-x-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                        class="flex items-center justify-start px-4 py-2 text-black cursor-pointer gap-x-2 hover:bg-gray-100"
                                     >
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
                                         <span>تعديل</span>
@@ -298,7 +298,7 @@
                                     <div 
                                         @click="modalOpen = true"
                                         onclick="deleteMonth('{% url 'main:deleteMonth' group.id month.id %}')"
-                                        class="flex items-center gap-x-2 px-4 text-red-400 py-2 cursor-pointer hover:bg-gray-100"
+                                        class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
                                     >
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
                                         <span>حــذف</span>
@@ -308,7 +308,7 @@
                             {% else %}
                             <span 
                                 x-data="{ optionsOpen: false}"
-                                class="relative flex items-center justify-between py-2 cursor-default bg-orange-400 bg-opacity-5 text-orange-400 px-3 font-semibold"
+                                class="relative flex items-center justify-between px-3 py-2 font-semibold text-orange-400 bg-orange-400 cursor-default bg-opacity-5"
                             >
 
                                 {{ month.title }}
@@ -319,7 +319,7 @@
                                     @click="optionsOpen = !optionsOpen"
                                     class="text-orange-400 cursor-pointer"
                                 >
-                                    <div class="rounded-full transition-all hover:bg-gray-100">
+                                    <div class="transition-all rounded-full hover:bg-gray-100">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
                                         </svg>
@@ -334,7 +334,7 @@
                                     x-transition:leave-start="opacity-100"
                                     x-transition:leave-end="opacity-0"
                                     :class="optionsOpen ? 'mt-5' : 'mt-0' "
-                                    class="absolute top-5 z-10 mt-2 -left-7 rounded border bg-white transition-all"
+                                    class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
                                 >
                                     <div 
                                         @click="modalOpen = true"
@@ -342,7 +342,7 @@
                                             '{% url 'main:updateMonth' group.id month.id employee.id current_year.id current_month.id %}',
                                             '{{ month.title }}'
                                         )"
-                                        class="flex text-black items-center justify-start gap-x-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                        class="flex items-center justify-start px-4 py-2 text-black cursor-pointer gap-x-2 hover:bg-gray-100"
                                     >
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
                                         <span>تعديل</span>
@@ -350,7 +350,7 @@
                                     <div 
                                         @click="modalOpen = true"
                                         onclick="deleteMonth('{% url 'main:deleteMonth' group.id month.id %}')"
-                                        class="flex items-center gap-x-2 px-4 text-red-400 py-2 cursor-pointer hover:bg-gray-100"
+                                        class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
                                     >
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
                                         <span>حــذف</span>
@@ -360,14 +360,14 @@
                             {% endif %}
                         {% endfor %}
                         <span
-                            class="py-2 text-black cursor-pointer hover:text-gray-600 flex items-center gap-x-2 justify-center"
+                            class="flex items-center justify-center py-2 text-black cursor-pointer hover:text-gray-600 gap-x-2"
                             @click="modalOpen = true"
                             onclick="addMonth()"
                         >
-                            <button class="py-2 rounded-md text-sm font-semibold hover:bg-opacity-75">
+                            <button class="py-2 text-sm font-semibold rounded-md hover:bg-opacity-75">
                                 إضافة
                             </button>
-                            <svg  class="fill-current font-bold" width="17" height="17" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
+                            <svg  class="font-bold fill-current" width="17" height="17" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
                         </span>
                     </div>
                 </div>                  
@@ -375,12 +375,12 @@
 
             <button
                 @click="modalOpen = true"
-                class="bg-orange-400 flex items-center rounded py-3 px-5 font-semibold text-white hover:bg-opacity-75 transition-all"
+                class="flex items-center px-5 py-3 font-semibold text-white transition-all bg-orange-400 rounded hover:bg-opacity-75"
                 onclick="addDay()"
             >
                 إضافة يوم
                 <span class="pr-2">
-                    <svg  class="fill-current font-bold" width="20" height="20" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
+                    <svg  class="font-bold fill-current" width="20" height="20" viewBox="0 0 24 24" focusable="false"><path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path></svg>
                 </span>
             </button>
         </div>
@@ -388,37 +388,37 @@
 
 
         <!-- Days table -->
-        <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-            <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+        <div class="px-4 py-4 pt-10 pb-16 -mx-4 overflow-visible overflow-x-auto sm:-mx-8 sm:px-8">
+            <div class="inline-block min-w-full overflow-visible rounded-lg shadow">
                 <table class="min-w-full leading-normal">
                     <thead>
                         <tr>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600">
+                                class="px-5 py-3 text-xs font-semibold text-right text-gray-600 bg-gray-100 border-b-2 border-gray-200">
                                 اليوم
                             </th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600">
+                                class="px-5 py-3 text-xs font-semibold text-right text-gray-600 bg-gray-100 border-b-2 border-gray-200">
                                 وقت الحضور
                             </th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600">
+                                class="px-5 py-3 text-xs font-semibold text-right text-gray-600 bg-gray-100 border-b-2 border-gray-200">
                                 وقت الانصراف
                             </th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600">
+                                class="px-5 py-3 text-xs font-semibold text-right text-gray-600 bg-gray-100 border-b-2 border-gray-200">
                                 الوقت الكلي
                             </th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600">
+                                class="px-5 py-3 text-xs font-semibold text-right text-gray-600 bg-gray-100 border-b-2 border-gray-200">
                                 مقدار الزيادة 
                             </th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600">
+                                class="px-5 py-3 text-xs font-semibold text-right text-gray-600 bg-gray-100 border-b-2 border-gray-200">
                                 مقدار النقيصة
                             </th>
                             <th
-                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600">
+                                class="px-5 py-3 text-xs font-semibold text-right text-gray-600 bg-gray-100 border-b-2 border-gray-200">
                                 الملاحظات
                             </th>
                         </tr>
@@ -426,7 +426,7 @@
                     <tbody>
                         {% for day in employee_days %}
                         <tr>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {% if day.title %}
                                         {{ day.title }}
@@ -436,7 +436,7 @@
                                 </p>
                                 {{ day.date_day }}/{{ day.date_month }}/{{ current_year.title }}
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     الساعة 
                                     <span class="font-bold">{{ day.attend_hour }}</span>
@@ -445,7 +445,7 @@
                                     دقيقة
                                 </p>
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     الساعة 
                                     <span class="font-bold">{{ day.leave_hour }}</span>
@@ -454,7 +454,7 @@
                                     دقيقة
                                 </p>
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 <p class="text-gray-900 whitespace-no-wrap"> 
                                     <span class="font-bold">{{ day.total_hours }}</span>
                                     ساعة و 
@@ -462,9 +462,9 @@
                                     دقيقة
                                 </p>
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                                    <span class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                                <span class="relative inline-block px-3 py-1 font-semibold leading-tight text-green-900">
+                                    <span class="absolute inset-0 bg-green-200 rounded-full opacity-50"></span>
                                     <span class="relative">
                                         <p class="text-gray-900 whitespace-no-wrap"> 
                                             <span class="font-bold">{{ day.more_hours }}</span>
@@ -475,9 +475,9 @@
                                     </span>
                                 </span>
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
-                                    <span class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                                <span class="relative inline-block px-3 py-1 font-semibold leading-tight text-red-900">
+                                    <span class="absolute inset-0 bg-red-200 rounded-full opacity-50"></span>
                                     <span class="relative">
                                         <p class="text-gray-900 whitespace-no-wrap"> 
                                             <span class="font-bold">{{ day.less_hours }}</span>
@@ -488,41 +488,96 @@
                                     </span>
                                 </span>
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200">
+                            <td 
+                                x-data="{ optionsOpen: false}"
+                                @click.outside="optionsOpen = false"
+                                class="relative px-5 py-5 border-b border-gray-200"
+                            >
                                 {% if day.note %}
                                 <button 
-                                    class="bg-orange-400 py-1 text-white px-3 rounded-full text-sm font-semibold hover:bg-opacity-75"
+                                    class="px-3 py-1 text-sm font-semibold text-white bg-orange-400 rounded-full hover:bg-opacity-75"
                                     @click="modalOpen = true"
-                                    onclick="showNote('{{ day.note }}')"
+                                    onclick="showNote('{{ day.note|escapejs|safe }}')"
                                 >
                                     عرض الملاحظات
                                 </button>
                                 {% endif %}
+                                
+                                <!-- Options button -->
+                                <div
+                                    @click="optionsOpen = !optionsOpen"
+                                    class="absolute text-orange-400 cursor-pointer left-3 top-1/4"
+                                >
+                                    <div class="transition-all rounded-full hover:bg-gray-100">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="2rem" width="2rem" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Options menu -->
+                                <div 
+                                    x-show="optionsOpen"
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100"
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                    :class="optionsOpen ? 'mt-5' : 'mt-0' "
+                                    class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
+                                >
+                                        <div 
+                                            @click="modalOpen = true"
+                                            onclick="updateDay(
+                                                '{% url 'main:updateDay' group.id day.id employee.id current_year.id current_month.id %}',
+                                                '{{ day.title }}',
+                                                '{{ day.attend_hour }}',
+                                                '{{ day.attend_minute }}',
+                                                '{{ day.leave_hour }}',
+                                                '{{ day.leave_minute }}',
+                                                '{{ day.date_day }}',
+                                                '{{ day.date_month }}',
+                                                '{{ day.note|escapejs }}'
+                                            )"
+                                            class="flex items-center justify-start px-4 py-2 text-black cursor-pointer gap-x-2 hover:bg-gray-100"
+                                        >
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z"></path></svg>
+                                            <span>تعديل</span>
+                                        </div>
+                                        <div 
+                                            @click="modalOpen = true"
+                                            onclick="deleteDay('{% url 'main:deleteDay' group.id day.id employee.id current_year.id current_month.id %}')"
+                                            class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
+                                        >
+                                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1.5rem" width="1.5rem" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
+                                            <span>حــذف</span>
+                                        </div>
+                                </div>
+
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     لا توجد بيانات.
                                 </p>
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                 
                             </td>
                         </tr>
@@ -532,25 +587,26 @@
             </div>
         </div>
 
+        <!-- Month & Year table -->
         <div class="flex items-center justify-start gap-10">
             <!-- Month results table -->
-            <div class="mx-auto flex justify-center sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                <div class="inline-block shadow rounded-lg overflow-hidden">
+            <div class="flex justify-center px-4 py-4 mx-auto overflow-x-auto sm:-mx-8 sm:px-8">
+                <div class="inline-block overflow-hidden rounded-lg shadow">
                     <table class="min-w-full leading-normal">
                         <thead>
                             <tr>
                                 <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-lg font-semibold text-gray-600">
+                                    class="px-5 py-3 text-lg font-semibold text-center text-gray-600 bg-gray-100 border-b-2 border-gray-200">
                                     المجموع الشهري - {{ current_month.title }}
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="px-5 py-5 gap-x-3 flex items-center border-b border-gray-200 bg-white text-sm">
+                                <td class="flex items-center px-5 py-5 text-sm bg-white border-b border-gray-200 gap-x-3">
                                     <p class="font-semibold">الزيادة بالوقت: </p>
-                                    <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                                        <span class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                                    <span class="relative inline-block px-3 py-1 font-semibold leading-tight text-green-900">
+                                        <span class="absolute inset-0 bg-green-200 rounded-full opacity-50"></span>
                                         <span class="relative">
                                             <p class="text-gray-900 whitespace-no-wrap"> 
                                                 <span class="font-bold">{{ current_month.more_hours }}</span>
@@ -565,10 +621,10 @@
                             </tr>
                             
                             <tr>
-                                <td class="px-5 flex items-center gap-x-3 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td class="flex items-center px-5 py-5 text-sm bg-white border-b border-gray-200 gap-x-3">
                                     <p class="font-semibold">النقيصة بالوقت: </p>
-                                    <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
-                                        <span class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+                                    <span class="relative inline-block px-3 py-1 font-semibold leading-tight text-red-900">
+                                        <span class="absolute inset-0 bg-red-200 rounded-full opacity-50"></span>
                                         <span class="relative">
                                             <p class="text-gray-900 whitespace-no-wrap"> 
                                                 <span class="font-bold">{{ current_month.less_hours }}</span>
@@ -588,23 +644,23 @@
     
     
             <!-- Year results table -->
-            <div class="mx-auto flex justify-center sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                <div class="inline-block shadow rounded-lg overflow-hidden">
+            <div class="flex justify-center px-4 py-4 mx-auto overflow-x-auto sm:-mx-8 sm:px-8">
+                <div class="inline-block overflow-hidden rounded-lg shadow">
                     <table class="min-w-full leading-normal">
                         <thead>
                             <tr>
                                 <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-lg font-semibold text-gray-600">
+                                    class="px-5 py-3 text-lg font-semibold text-center text-gray-600 bg-gray-100 border-b-2 border-gray-200">
                                     المجموع السنوي - {{ current_year.title }}
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="px-5 py-5 gap-x-3 flex items-center border-b border-gray-200 bg-white text-sm">
+                                <td class="flex items-center px-5 py-5 text-sm bg-white border-b border-gray-200 gap-x-3">
                                     <p class="font-semibold">الزيادة بالوقت: </p>
-                                    <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                                        <span class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                                    <span class="relative inline-block px-3 py-1 font-semibold leading-tight text-green-900">
+                                        <span class="absolute inset-0 bg-green-200 rounded-full opacity-50"></span>
                                         <span class="relative">
                                             <p class="text-gray-900 whitespace-no-wrap"> 
                                                 <span class="font-bold">{{ current_year.more_hours }}</span>
@@ -619,10 +675,10 @@
                             </tr>
                             
                             <tr>
-                                <td class="px-5 flex items-center gap-x-3 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td class="flex items-center px-5 py-5 text-sm bg-white border-b border-gray-200 gap-x-3">
                                     <p class="font-semibold">النقيصة بالوقت: </p>
-                                    <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
-                                        <span class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+                                    <span class="relative inline-block px-3 py-1 font-semibold leading-tight text-red-900">
+                                        <span class="absolute inset-0 bg-red-200 rounded-full opacity-50"></span>
                                         <span class="relative">
                                             <p class="text-gray-900 whitespace-no-wrap"> 
                                                 <span class="font-bold">{{ current_year.less_hours }}</span>
@@ -649,7 +705,6 @@
 <script>
     const modal = document.getElementById("modal")
     const date = new Date()
-
 
     // ADD
     function addYear(){
@@ -722,7 +777,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="cursor-pointer block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
                     >
                         إلغاء
                     </p>
@@ -756,9 +811,9 @@
                 name="title"
             >
 
-            <div class="flex flex-col items-right justify-center gap-3">
+            <div class="flex flex-col justify-center gap-3 items-right">
                 <p class="font-semibold">الحضور:</p>
-                <div class="flex justify-center items-center gap-x-3">
+                <div class="flex items-center justify-center gap-x-3">
                     <input
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                         placeholder="الساعة" 
@@ -775,9 +830,9 @@
                 
             </div>
 
-            <div class="flex flex-col items-right justify-center gap-3">
+            <div class="flex flex-col justify-center gap-3 items-right">
                 <p class="font-semibold">الانصراف:</p>
-                <div class="flex justify-center items-center gap-x-3">
+                <div class="flex items-center justify-center gap-x-3">
                     <input
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                         placeholder="الساعة" 
@@ -793,9 +848,9 @@
                 </div>
             </div>
 
-            <div class="flex flex-col items-right justify-center gap-3">
+            <div class="flex flex-col justify-center gap-3 items-right">
                 <p class="font-semibold">التاريخ:</p>
-                <div class="flex justify-center items-center gap-x-3">
+                <div class="flex items-center justify-center gap-x-3">
                     <input
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                         type="text" 
@@ -815,7 +870,7 @@
                 </div>
             </div>
             
-            <textarea class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring mt-3 resize-none" name="note" value="" placeholder="كتابة الملاحظات" rows="4"></textarea>
+            <input class="w-full px-4 py-2 mt-3 border rounded-md resize-none h-28 focus:outline-none focus:ring" name="note" value="" placeholder="كتابة الملاحظات"></input>
 
 
             <input class="hidden" name="employee" value="{{ employee.id }}" hidden>
@@ -833,12 +888,12 @@
 
             <div class="flex flex-wrap justify-center mt-3 -mx-3">
                 <div class="w-1/6 px-3">
-                    <button
+                    <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
                     >
                         إلغاء
-                    </button>
+                    </p>
                 </div>
                 <div class="w-1/6 px-3">
                     <button
@@ -888,7 +943,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="cursor-pointer block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
                     >
                         إلغاء
                     </p>
@@ -996,6 +1051,124 @@
         </form>`
     }
 
+    function updateDay(url, title, attend_hour, attend_minute, leave_hour, leave_minute, day, month, note){
+        modal.innerHTML = 
+        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+            تعديل معلومات
+        </h3>
+    
+        <form class="flex flex-col gap-y-3" action="${url}" method="POST">
+            {% csrf_token %}
+            <input
+                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                type="text" 
+                placeholder="عنوان اليوم، الثلاثاء مثلاً" 
+                required=""
+                x-ref="input"
+                name="title"
+                value="${title}"
+            >
+
+            <div class="flex flex-col justify-center gap-3 items-right">
+                <p class="font-semibold">الحضور:</p>
+                <div class="flex items-center justify-center gap-x-3">
+                    <input
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        placeholder="الساعة" 
+                        required=""
+                        name="attend_hour"
+                        value="${attend_hour}"
+                    >
+                    <input
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        placeholder="الدقيقة" 
+                        required=""
+                        name="attend_minute"
+                        value="${attend_minute}"
+                    >
+                </div>
+                
+            </div>
+
+            <div class="flex flex-col justify-center gap-3 items-right">
+                <p class="font-semibold">الانصراف:</p>
+                <div class="flex items-center justify-center gap-x-3">
+                    <input
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        placeholder="الساعة" 
+                        required=""
+                        name="leave_hour"
+                        value="${leave_hour}"
+                    >
+                    <input
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        placeholder="الدقيقة" 
+                        required=""
+                        name="leave_minute"
+                        value="${leave_minute}"
+                    >
+                </div>
+            </div>
+
+            <div class="flex flex-col justify-center gap-3 items-right">
+                <p class="font-semibold">التاريخ:</p>
+                <div class="flex items-center justify-center gap-x-3">
+                    <input
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        type="text" 
+                        placeholder="اليوم" 
+                        required=""
+                        name="date_day"
+                        value="${day}"
+                    >
+                    <input
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        type="text" 
+                        placeholder="الشهر" 
+                        required=""
+                        name="date_month"
+                        value="${month}"
+                    >
+                </div>
+            </div>
+            
+            <input class="w-full px-4 py-2 mt-3 border rounded-md resize-none h-28 focus:outline-none focus:ring" name="note" value="${note}" placeholder="كتابة الملاحظات">
+
+
+            <input class="hidden" name="employee" value="{{ employee.id }}" hidden>
+            <input class="hidden" name="month" value="{{ current_month.id }}" hidden>
+            <input class="hidden" name="year" value="{{ current_year.id }}" hidden>
+            <input class="hidden" name="required_hours" value="{{ group.required_hours }}" hidden>
+            <input class="hidden" name="required_minutes" value="{{ group.required_minutes }}" hidden>
+            <input class="hidden" name="more_hours" value="0" hidden>
+            <input class="hidden" name="more_minutes" value="0" hidden>
+            <input class="hidden" name="less_hours" value="0" hidden>
+            <input class="hidden" name="less_minutes" value="0" hidden>
+            <input class="hidden" name="total_hours" value="0" hidden>
+            <input class="hidden" name="total_minutes" value="0" hidden>
+
+
+            <div class="flex flex-wrap justify-center mt-3 -mx-3">
+                <div class="w-1/6 px-3">
+                    <button
+                        @click="modalOpen = false"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                    >
+                        إلغاء
+                    </button>
+                </div>
+                <div class="w-1/6 px-3">
+                    <button
+                        type="submit"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                    >
+                        تم
+                    </button>
+                </div>
+            </div>
+        </form>`
+    }
+
 
     // DELETE
     function deleteYear(url){
@@ -1010,7 +1183,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 cursor-pointer text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
                     >
                         إلغاء
                     </p>
@@ -1039,7 +1212,36 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 cursor-pointer text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
+                    >
+                        إلغاء
+                    </p>
+                </div>
+                <div class="w-1/6 px-3">
+                    <button
+                        type="submit"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                    >
+                        تم
+                    </button>
+                </div>
+            </div>
+        </form>`
+    }
+
+    function deleteDay(url){
+        modal.innerHTML = 
+        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+            هل أنت متأكد؟
+        </h3>
+
+        <form class="flex flex-col gap-y-3" action="${url}" method="POST">
+            {% csrf_token %}
+            <div class="flex flex-wrap justify-center mt-3 -mx-3">
+                <div class="w-1/6 px-3">
+                    <p
+                        @click="modalOpen = false"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
                     >
                         إلغاء
                     </p>

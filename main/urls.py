@@ -22,10 +22,12 @@ urlpatterns = [
     path("<str:groupId>/<str:employeeId>/updateEmployee/", views.updateEmployee, name="updateEmployee"),
     path("<str:groupId>/<str:yearId>/updateYear/<str:employeeId>/<str:currentYearId>/<str:currentMonthId>/", views.updateYear, name="updateYear"),
     path("<str:groupId>/<str:monthId>/updateMonth/<str:employeeId>/<str:currentYearId>/<str:currentMonthId>/", views.updateMonth, name="updateMonth"),
+    path("<str:groupId>/<str:dayId>/updateDay/<str:employeeId>/<str:currentYearId>/<str:currentMonthId>/", views.updateDay, name="updateDay"),
 
     # DELETE
     path("deleteGroup/<str:groupId>", views.deleteGroup, name="deleteGroup"),
     path("<str:groupId>/<str:employeeId>/deleteEmployee/", views.deleteEmployee, name="deleteEmployee"),
     path("<str:groupId>/<str:yearId>/deleteYear/", views.deleteYear, name="deleteYear"),
     path("<str:groupId>/<str:monthId>/deleteMonth/", views.deleteMonth, name="deleteMonth"),
+    path("<str:groupId>/<str:dayId>/deleteDay/<str:employeeId>/<str:currentYearId>/<str:currentMonthId>/", views.deleteDay, name="deleteDay"),
 ]

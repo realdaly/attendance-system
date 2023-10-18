@@ -171,7 +171,7 @@ class Day(models.Model):
     less_minutes = models.PositiveIntegerField(default=0)
     total_hours = models.IntegerField(default=0)
     total_minutes = models.IntegerField(default=0)
-    note = models.TextField(max_length=2000, null=True, blank=True)
+    note = models.CharField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
         return f"{self.employee.name} - {self.month.title} {self.year.title}"

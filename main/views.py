@@ -186,6 +186,19 @@ def updateMonth(request, groupId, monthId, employeeId, currentYearId, currentMon
             return redirect("main:index")
         
 
+
+def updateDay(request, groupId, dayId, employeeId, currentYearId, currentMonthId):
+    if request.method == "POST":
+        day = Day.objects.get(id=dayId)
+        form = DayForm(request.POST, instance=day)
+
+        if form.is_valid():
+            form.save()
+            return redirect("main:profile", groupId, employeeId, currentYearId, currentMonthId)
+        else:
+            return redirect("main:index")
+        
+
 #  ---------------------------------------- DELETE ----------------------------------------
 def deleteGroup(request, groupId):
     if request.method == "POST":
@@ -215,3 +228,10 @@ def deleteMonth(request, groupId, monthId):
         month = Month.objects.get(id=monthId)
         month.delete()
         return redirect("main:employees", groupId)
+    
+
+def deleteDay(request, groupId, dayId, employeeId, currentYearId, currentMonthId):
+    if request.method == "POST":
+        day = Day.objects.get(id=dayId)
+        day.delete()
+        return redirect("main:profile", groupId, employeeId, currentYearId, currentMonthId)
