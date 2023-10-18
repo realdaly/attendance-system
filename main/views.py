@@ -161,14 +161,27 @@ def updateEmployee(request, groupId, employeeId):
         
 
 
-def updateYear(request, groupId, yearId):
+def updateYear(request, groupId, yearId, employeeId, currentYearId, currentMonthId):
     if request.method == "POST":
         year = Year.objects.get(id=yearId)
         form = YearForm(request.POST, instance=year)
 
         if form.is_valid():
             form.save()
-            return redirect("main:employees", groupId)
+            return redirect("main:profile", groupId, employeeId, currentYearId, currentMonthId)
+        else:
+            return redirect("main:index")
+        
+
+
+def updateMonth(request, groupId, monthId, employeeId, currentYearId, currentMonthId):
+    if request.method == "POST":
+        month = Month.objects.get(id=monthId)
+        form = MonthForm(request.POST, instance=month)
+
+        if form.is_valid():
+            form.save()
+            return redirect("main:profile", groupId, employeeId, currentYearId, currentMonthId)
         else:
             return redirect("main:index")
         
@@ -186,4 +199,19 @@ def deleteEmployee(request, groupId, employeeId):
     if request.method == "POST":
         employee = Employee.objects.get(id=employeeId)
         employee.delete()
+        return redirect("main:employees", groupId)
+    
+
+
+def deleteYear(request, groupId, yearId):
+    if request.method == "POST":
+        year = Year.objects.get(id=yearId)
+        year.delete()
+        return redirect("main:employees", groupId)
+    
+    
+def deleteMonth(request, groupId, monthId):
+    if request.method == "POST":
+        month = Month.objects.get(id=monthId)
+        month.delete()
         return redirect("main:employees", groupId)
