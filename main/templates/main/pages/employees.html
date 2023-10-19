@@ -54,7 +54,7 @@
                 {{ employee.name }}
             </h1>
     
-            {% if not employee_last_year %}
+            {% if not employee.years.first %}
             <button 
                 @click="modalOpen = true"
                 class="bg-orange-400 text-white py-3 px-8 rounded text-sm font-semibold hover:bg-opacity-75 transition-all"
@@ -64,23 +64,22 @@
             </button>
             {% endif %}
             
-            {% if employee_last_year %}
-                {% if not employee_last_month %}
+            {% if employee.years.first %}
+                {% if not employee.years.first.months.first.id %}
                 <button 
                     @click="modalOpen = true"
                     class="bg-orange-400 text-white py-3 px-8 rounded text-sm font-semibold hover:bg-opacity-75 transition-all"
-                    onclick="addMonth({{ employee.id }}, {{ employee_last_year.id }})"
+                    onclick="addMonth({{ employee.id }}, {{ employee.years.first.id }})"
                 >
                     إضافة شهر
                 </button>
+                {% else %}
+                    <a href="{% url 'main:profile' group.id employee.id employee.years.first.id employee.years.first.months.first.id %}">
+                        <button class="bg-orange-400 text-white py-3 px-8 rounded text-sm font-semibold hover:bg-opacity-75 transition-all">عرض التفاصيل</button>
+                    </a>
                 {% endif %}
             {% endif %}
     
-            {% if employee_last_month %}
-            <a href="{% url 'main:profile' group.id employee.id employee_last_year.id employee_last_month.id %}">
-                <button class="bg-orange-400 text-white py-3 px-8 rounded text-sm font-semibold hover:bg-opacity-75 transition-all">عرض التفاصيل</button>
-            </a>
-            {% endif %}
 
             <!-- Options button -->
             <div
@@ -175,12 +174,12 @@
 
             <div class="flex flex-wrap justify-center mt-5 -mx-3">
                 <div class="w-1/6 px-3">
-                    <button
+                    <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="cursor-pointer block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
                     >
                         إلغاء
-                    </button>
+                    </p>
                 </div>
                 <div class="w-1/6 px-3">
                     <button
@@ -219,12 +218,12 @@
 
             <div class="flex flex-wrap justify-center mt-5 -mx-3">
                 <div class="w-1/6 px-3">
-                    <button
+                    <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="cursor-pointer block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
                     >
                         إلغاء
-                    </button>
+                    </p>
                 </div>
                 <div class="w-1/6 px-3">
                     <button
@@ -287,12 +286,12 @@
 
             <div class="flex flex-wrap justify-center mt-3 -mx-3">
                 <div class="w-1/6 px-3">
-                    <button
+                    <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="cursor-pointer block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
                     >
                         إلغاء
-                    </button>
+                    </p>
                 </div>
                 <div class="w-1/6 px-3">
                     <button
@@ -365,12 +364,12 @@
 
             <div class="flex flex-wrap justify-center mt-3 -mx-3">
                 <div class="w-1/6 px-3">
-                    <button
+                    <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="cursor-pointer block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
                     >
                         إلغاء
-                    </button>
+                    </p>
                 </div>
                 <div class="w-1/6 px-3">
                     <button

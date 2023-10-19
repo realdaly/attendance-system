@@ -19,24 +19,12 @@ def employees(request, groupId):
     media_path = request.build_absolute_uri("/media/")
     group = Group.objects.get(id=groupId)
     employees = group.employees.all()
-    employee_last_year = None
-    employee_last_month = None
-
-    for employee in employees:
-        employee_last_year = employee.years.first()
-        if employee_last_year:
-            employee_last_month = employee_last_year.months.first()
-        else:
-            employee_last_year = None
-            employee_last_month = None
             
 
     context = {
         "media_path": media_path,
         "group": group,
         "employees": employees,
-        "employee_last_year": employee_last_year,
-        "employee_last_month": employee_last_month,
     }
     return render(request, "main/pages/employees.html", context)
 
