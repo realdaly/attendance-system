@@ -40,43 +40,40 @@ class Year(models.Model):
         ordering = ['-id']
 
     def update_more_less(self):
+        self.more_hours = 0
+        self.more_minutes = 0
+        self.less_hours = 0
+        self.less_minutes = 0
+
+
         # Calculate the difference between more and less hours and minutes
         more_hours = self.months.aggregate(models.Sum('more_hours'))['more_hours__sum'] or 0
         more_minutes = self.months.aggregate(models.Sum('more_minutes'))['more_minutes__sum'] or 0
         less_hours = self.months.aggregate(models.Sum('less_hours'))['less_hours__sum'] or 0
         less_minutes = self.months.aggregate(models.Sum('less_minutes'))['less_minutes__sum'] or 0
 
-        # Convert each 60 minutes to 1 hour
-        if less_minutes >= 60:
-            less_hours = less_hours + less_minutes / 60
-            less_minutes = less_minutes % 60
+        # Convert all time to minutes
+        result_more = more_hours * 60 + more_minutes
+        result_less = less_hours * 60 + less_minutes
 
-        if more_minutes >= 60:
-            more_hours = more_hours + more_minutes / 60
-            more_minutes = more_minutes % 60
+        # Finding the difference between more and less and specifiying how much more and less according to that
+        final_result = result_more - result_less
 
-        result_hours = more_hours - less_hours
-        result_minutes = more_minutes - less_minutes
-
-        # Update more and less hours and minutes based on the result
-        if result_hours < 0:
-            self.less_hours = abs(result_hours)
+        if final_result < 0:
+            self.less_hours = abs(final_result) / 60
+            self.less_minutes = abs(final_result) % 60
             self.more_hours = 0
-        elif result_hours > 0:
-            self.more_hours = result_hours
-            self.less_hours = 0
-        else:
-            self.more_hours = 0
-            self.less_hours = 0
-
-        if result_minutes < 0:
-            self.less_minutes = abs(result_minutes)
             self.more_minutes = 0
-        elif result_minutes > 0:
-            self.more_minutes = result_minutes
+
+        elif final_result > 0:
+            self.more_hours = abs(final_result) / 60
+            self.more_minutes = abs(final_result) % 60
+            self.less_hours = 0
             self.less_minutes = 0
         else:
+            self.more_hours = 0
             self.more_minutes = 0
+            self.less_hours = 0
             self.less_minutes = 0
 
         self.save()
@@ -106,43 +103,35 @@ class Month(models.Model):
         self.less_hours = 0
         self.less_minutes = 0
         
+        
         # Calculate the difference between more and less hours and minutes
         more_hours = self.days.aggregate(models.Sum('more_hours'))['more_hours__sum'] or 0
         more_minutes = self.days.aggregate(models.Sum('more_minutes'))['more_minutes__sum'] or 0
         less_hours = self.days.aggregate(models.Sum('less_hours'))['less_hours__sum'] or 0
         less_minutes = self.days.aggregate(models.Sum('less_minutes'))['less_minutes__sum'] or 0
 
-        # Convert each 60 minutes to 1 hour
-        if less_minutes >= 60:
-            less_hours = less_hours + less_minutes / 60
-            less_minutes = less_minutes % 60
+        # Convert all time to minutes
+        result_more = more_hours * 60 + more_minutes
+        result_less = less_hours * 60 + less_minutes
 
-        if more_minutes >= 60:
-            more_hours = more_hours + more_minutes / 60
-            more_minutes = more_minutes % 60
+        # Finding the difference between more and less and specifiying how much more and less according to that
+        final_result = result_more - result_less
 
-        result_hours = more_hours - less_hours
-        result_minutes = more_minutes - less_minutes
-
-        # Update more and less hours and minutes based on the result
-        if result_hours < 0:
-            self.less_hours = abs(result_hours)
+        if final_result < 0:
+            self.less_hours = abs(final_result) / 60
+            self.less_minutes = abs(final_result) % 60
             self.more_hours = 0
-        elif result_hours > 0:
-            self.more_hours = result_hours
+            self.more_minutes = 0
+
+        elif final_result > 0:
+            self.more_hours = abs(final_result) / 60
+            self.more_minutes = abs(final_result) % 60
             self.less_hours = 0
-        else:
-            self.more_hours = 0
-            self.more_minutes = 0
-
-        if result_minutes < 0:
-            self.less_minutes = abs(result_minutes)
-            self.more_minutes = 0
-        elif result_minutes > 0:
-            self.more_minutes = result_minutes
             self.less_minutes = 0
         else:
+            self.more_hours = 0
             self.more_minutes = 0
+            self.less_hours = 0
             self.less_minutes = 0
 
         self.save()

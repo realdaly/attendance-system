@@ -117,7 +117,7 @@
                                         class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
                                     >
                                             <div 
-                                                @click="modalOpen = true"
+                                                @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                                 onclick="updateYear(
                                                     '{% url 'main:updateYear' group.id year.id employee.id current_year.id current_month.id  %}',
                                                     '{{ year.title }}'
@@ -128,7 +128,7 @@
                                                 <span>تعديل</span>
                                             </div>
                                             <div 
-                                                @click="modalOpen = true"
+                                                @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                                 onclick="deleteYear('{% url 'main:deleteYear' group.id year.id %}')"
                                                 class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
                                             >
@@ -139,7 +139,7 @@
                                 </div>
                                 {% else %}
                                 <span
-                                    @click="modalOpen = true"
+                                    @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                     onclick="addMonthBefore(
                                         '{% url 'main:initMonth' employee.group.id %}',
                                         '{{ year.id }}'
@@ -180,7 +180,7 @@
                                     class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
                                 >
                                         <div 
-                                            @click="modalOpen = true"
+                                            @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                             onclick="updateYear(
                                                     '{% url 'main:updateYear' group.id year.id employee.id current_year.id current_month.id  %}',
                                                     '{{ year.title }}'
@@ -191,7 +191,7 @@
                                             <span>تعديل</span>
                                         </div>
                                         <div 
-                                            @click="modalOpen = true"
+                                            @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                             onclick="deleteYear('{% url 'main:deleteYear' group.id year.id %}')"
                                             class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
                                         >
@@ -205,7 +205,7 @@
                         {% endfor %}
                         <span
                             class="flex items-center justify-center py-2 text-black cursor-pointer hover:text-gray-600 gap-x-2"
-                            @click="modalOpen = true"
+                            @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                             onclick="addYear()"
                         >
                             <button class="py-2 text-sm font-semibold rounded-md hover:bg-opacity-75">
@@ -285,7 +285,7 @@
                                     class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
                                 >
                                     <div 
-                                        @click="modalOpen = true"
+                                        @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                         onclick="updateMonth(
                                             '{% url 'main:updateMonth' group.id month.id employee.id current_year.id current_month.id %}',
                                             '{{ month.title }}'
@@ -296,7 +296,7 @@
                                         <span>تعديل</span>
                                     </div>
                                     <div 
-                                        @click="modalOpen = true"
+                                        @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                         onclick="deleteMonth('{% url 'main:deleteMonth' group.id month.id %}')"
                                         class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
                                     >
@@ -337,7 +337,7 @@
                                     class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
                                 >
                                     <div 
-                                        @click="modalOpen = true"
+                                        @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                         onclick="updateMonth(
                                             '{% url 'main:updateMonth' group.id month.id employee.id current_year.id current_month.id %}',
                                             '{{ month.title }}'
@@ -348,7 +348,7 @@
                                         <span>تعديل</span>
                                     </div>
                                     <div 
-                                        @click="modalOpen = true"
+                                        @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                         onclick="deleteMonth('{% url 'main:deleteMonth' group.id month.id %}')"
                                         class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
                                     >
@@ -361,7 +361,7 @@
                         {% endfor %}
                         <span
                             class="flex items-center justify-center py-2 text-black cursor-pointer hover:text-gray-600 gap-x-2"
-                            @click="modalOpen = true"
+                            @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                             onclick="addMonth()"
                         >
                             <button class="py-2 text-sm font-semibold rounded-md hover:bg-opacity-75">
@@ -374,7 +374,7 @@
             </div>
 
             <button
-                @click="modalOpen = true"
+                @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                 class="flex items-center px-5 py-3 font-semibold text-white transition-all bg-orange-400 rounded hover:bg-opacity-75"
                 onclick="addDay()"
             >
@@ -496,7 +496,7 @@
                                 {% if day.note %}
                                 <button 
                                     class="px-3 py-1 text-sm font-semibold text-white bg-orange-400 rounded-full hover:bg-opacity-75"
-                                    @click="modalOpen = true"
+                                    @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                     onclick="showNote('{{ day.note|escapejs|safe }}')"
                                 >
                                     عرض الملاحظات
@@ -526,7 +526,7 @@
                                     class="absolute z-10 mt-2 transition-all bg-white border rounded top-5 -left-7"
                                 >
                                         <div 
-                                            @click="modalOpen = true"
+                                            @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                             onclick="updateDay(
                                                 '{% url 'main:updateDay' group.id day.id employee.id current_year.id current_month.id %}',
                                                 '{{ day.title }}',
@@ -546,7 +546,7 @@
                                             <span>تعديل</span>
                                         </div>
                                         <div 
-                                            @click="modalOpen = true"
+                                            @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                                             onclick="deleteDay('{% url 'main:deleteDay' group.id day.id employee.id current_year.id current_month.id %}')"
                                             class="flex items-center px-4 py-2 text-red-400 cursor-pointer gap-x-2 hover:bg-gray-100"
                                         >
@@ -720,7 +720,7 @@
             <input
                 class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                 type="text" 
-                placeholder="عنوان السنة، 2023 مثلاً" 
+                placeholder="أدخل عنوان السنة، 2023 مثلاً" 
                 required=""
                 x-ref="input"
                 name="title"
@@ -743,7 +743,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -763,7 +763,7 @@
             <input
                 class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                 type="text" 
-                placeholder="عنوان الشهر، الشهر العاشر مثلاً" 
+                placeholder="أدخل عنوان الشهر، الشهر العاشر مثلاً" 
                 required=""
                 x-ref="input"
                 name="title"
@@ -779,7 +779,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer hover:bg-opacity-80"
                     >
                         إلغاء
                     </p>
@@ -787,7 +787,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -807,14 +807,14 @@
             <input
                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                 type="text" 
-                placeholder="عنوان اليوم، الثلاثاء مثلاً" 
+                placeholder="أدخل عنوان اليوم، الثلاثاء مثلاً" 
                 required=""
                 x-ref="input"
                 name="title"
             >
 
-            <div class="flex flex-col justify-center gap-3 items-right">
-                <p class="font-semibold">الحضور:</p>
+            <div class="flex flex-col justify-center gap-3">
+                <p class="font-semibold">وقت الحضور:</p>
                 <div class="flex items-center justify-center gap-x-3">
                     <input
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
@@ -833,7 +833,7 @@
             </div>
 
             <div class="flex flex-col justify-center gap-3 items-right">
-                <p class="font-semibold">الانصراف:</p>
+                <p class="font-semibold">وقت الانصراف:</p>
                 <div class="flex items-center justify-center gap-x-3">
                     <input
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
@@ -851,7 +851,7 @@
             </div>
 
             <div class="flex flex-col justify-center gap-3 items-right">
-                <p class="font-semibold">التاريخ:</p>
+                <p class="font-semibold">تاريخ اليوم: </p>
                 <div class="flex items-center justify-center gap-x-3">
                     <input
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
@@ -888,11 +888,12 @@
             <input class="hidden" name="total_minutes" value="0" hidden>
 
 
+            <p class="text-sm text-red-400">ملاحظة/ يجب أن يكون الوقت المدخل بنظام 24 ساعة.</p>
             <div class="flex flex-wrap justify-center mt-3 -mx-3">
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer hover:bg-opacity-80"
                     >
                         إلغاء
                     </p>
@@ -900,7 +901,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -921,7 +922,7 @@
     function addMonthBefore(url, yearId){
         modal.innerHTML = 
         `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
-            أضف شهر قبل الانتقال إلى السنة
+            يرجى إضافة شهر قبل الانتقال إلى السنة
         </h3>
     
         <form action="${url}" method="POST">
@@ -929,7 +930,7 @@
             <input
                 class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                 type="text" 
-                placeholder="عنوان الشهر، الشهر العاشر مثلاً" 
+                placeholder="أدخل عنوان الشهر، الشهر العاشر مثلاً" 
                 required=""
                 x-ref="input"
                 name="title"
@@ -945,7 +946,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer hover:bg-opacity-80"
                     >
                         إلغاء
                     </p>
@@ -953,7 +954,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -975,7 +976,7 @@
             <input
                 class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                 type="text" 
-                placeholder="عنوان السنة، 2023 مثلاً" 
+                placeholder="أدخل عنوان السنة، 2023 مثلاً" 
                 required=""
                 x-ref="input"
                 name="title"
@@ -999,7 +1000,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -1019,7 +1020,7 @@
             <input
                 class="w-full max-w-xl px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                 type="text" 
-                placeholder="عنوان الشهر، الشهر العاشر مثلاً" 
+                placeholder="أدخل عنوان الشهر، الشهر العاشر مثلاً" 
                 required=""
                 x-ref="input"
                 name="title"
@@ -1044,7 +1045,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -1064,7 +1065,7 @@
             <input
                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                 type="text" 
-                placeholder="عنوان اليوم، الثلاثاء مثلاً" 
+                placeholder="أدخل عنوان اليوم، الثلاثاء مثلاً" 
                 required=""
                 x-ref="input"
                 name="title"
@@ -1072,7 +1073,7 @@
             >
 
             <div class="flex flex-col justify-center gap-3 items-right">
-                <p class="font-semibold">الحضور:</p>
+                <p class="font-semibold">وقت الحضور:</p>
                 <div class="flex items-center justify-center gap-x-3">
                     <input
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
@@ -1093,7 +1094,7 @@
             </div>
 
             <div class="flex flex-col justify-center gap-3 items-right">
-                <p class="font-semibold">الانصراف:</p>
+                <p class="font-semibold">وقت الانصراف:</p>
                 <div class="flex items-center justify-center gap-x-3">
                     <input
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
@@ -1113,7 +1114,7 @@
             </div>
 
             <div class="flex flex-col justify-center gap-3 items-right">
-                <p class="font-semibold">التاريخ:</p>
+                <p class="font-semibold">تاريخ اليوم:</p>
                 <div class="flex items-center justify-center gap-x-3">
                     <input
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
@@ -1149,7 +1150,8 @@
             <input class="hidden" name="total_hours" value="0" hidden>
             <input class="hidden" name="total_minutes" value="0" hidden>
 
-
+            <p class="text-sm text-red-400">ملاحظة/ يجب أن يكون الوقت المدخل بنظام 24 ساعة.</p>
+            
             <div class="flex flex-wrap justify-center mt-3 -mx-3">
                 <div class="w-1/6 px-3">
                     <p
@@ -1162,7 +1164,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -1185,7 +1187,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer hover:bg-opacity-80"
                     >
                         إلغاء
                     </p>
@@ -1193,7 +1195,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -1214,7 +1216,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer hover:bg-opacity-80"
                     >
                         إلغاء
                     </p>
@@ -1222,7 +1224,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -1243,7 +1245,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer"
+                        class="block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg cursor-pointer hover:bg-opacity-80"
                     >
                         إلغاء
                     </p>
@@ -1251,7 +1253,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>

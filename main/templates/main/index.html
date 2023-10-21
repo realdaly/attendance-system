@@ -3,7 +3,7 @@
 {% block body %}
 <div x-data="{ modalOpen: false }">
     <button 
-        @click="modalOpen = true"
+        @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
         onclick="addGroup()"
         class="bg-orange-400 flex items-center rounded py-3 px-5 font-semibold text-white hover:bg-opacity-75 transition-all"
     >
@@ -62,7 +62,7 @@
                 class="absolute top-7 z-10 mt-2 -left-7 rounded border bg-white transition-all"
             >
                     <div 
-                        @click="modalOpen = true"
+                        @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                         onclick=
                             "updateGroup(
                                     '{{ group.title }}', 
@@ -76,7 +76,7 @@
                         <span>تعديل</span>
                     </div>
                     <div 
-                        @click="modalOpen = true"
+                        @click="modalOpen = true;$nextTick(() => { $refs.input.focus(); })"
                         onclick="deleteGroup('{% url 'main:deleteGroup' group.id %}')"
                         class="flex items-center gap-x-2 px-4 text-red-400 py-2 cursor-pointer hover:bg-gray-100"
                     >
@@ -108,7 +108,7 @@
             <input
                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                 type="text" 
-                placeholder="العنوان، نظام 4 ساعات مثلا" 
+                placeholder="أدخل اسم النظام، نظام 4 ساعات مثلا" 
                 required=""
                 x-ref="input"
                 name="title"
@@ -138,7 +138,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="cursor-pointer block w-full p-3 text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="cursor-pointer block w-full p-3 text-base font-bold text-center text-white transition hover:bg-opacity-80 bg-red-600 border rounded-lg"
                     >
                         إلغاء
                     </p>
@@ -146,7 +146,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -166,7 +166,7 @@
             <input
                 class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
                 type="text" 
-                placeholder="العنوان، نظام 4 ساعات مثلا" 
+                placeholder="أدخل اسم النظام، نظام 4 ساعات مثلا" 
                 required=""
                 x-ref="input"
                 value="${title}"
@@ -198,7 +198,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 cursor-pointer text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="block w-full p-3 cursor-pointer text-base font-bold text-center text-white transition bg-red-600 border rounded-lg hover:bg-opacity-80"
                     >
                         إلغاء
                     </p>
@@ -206,7 +206,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
@@ -227,7 +227,7 @@
                 <div class="w-1/6 px-3">
                     <p
                         @click="modalOpen = false"
-                        class="block w-full p-3 cursor-pointer text-base font-bold text-center text-white transition bg-red-600 border rounded-lg"
+                        class="block w-full p-3 cursor-pointer text-base font-bold text-center text-white transition bg-red-600 border rounded-lg hover:bg-opacity-80"
                     >
                         إلغاء
                     </p>
@@ -235,7 +235,7 @@
                 <div class="w-1/6 px-3">
                     <button
                         type="submit"
-                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-90"
+                        class="block w-full p-3 text-base font-bold text-center transition border rounded-lg hover:bg-opacity-80 bg-gray-100"
                     >
                         تم
                     </button>
