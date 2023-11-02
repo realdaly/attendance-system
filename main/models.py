@@ -160,6 +160,10 @@ class Day(models.Model):
     less_minutes = models.PositiveIntegerField(default=0)
     total_hours = models.IntegerField(default=0)
     total_minutes = models.IntegerField(default=0)
+    exit_hour = models.PositiveIntegerField(default=0)
+    exit_minute = models.PositiveIntegerField(default=0)
+    enter_hour = models.PositiveIntegerField(default=0)
+    enter_minute = models.PositiveIntegerField(default=0)
     note = models.CharField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
@@ -174,8 +178,20 @@ class Day(models.Model):
         self.year.update_more_less()
 
     def save(self, *args, **kwargs):
+        if not self.exit_hour:
+            self.exit_hour = 0
+        if not self.exit_minute:
+            self.exit_minute = 0
+        if not self.enter_hour:
+            self.enter_hour = 0
+        if not self.enter_minute:
+            self.enter_minute = 0
+            
+        # Get implicit exit and enter times in minutes
+        total_implicit_minutes =  (self.enter_hour * 60 + self.enter_minute) - (self.exit_hour * 60 + self.exit_minute)
+
         # Calculate the total minutes worked
-        total_minutes = (self.leave_hour * 60 + self.leave_minute) - (self.attend_hour * 60 + self.attend_minute)
+        total_minutes = (self.leave_hour * 60 + self.leave_minute) - (self.attend_hour * 60 + self.attend_minute) - total_implicit_minutes
 
         # Calculate the total hours and total minutes
         self.total_hours = total_minutes // 60

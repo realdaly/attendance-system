@@ -425,8 +425,15 @@
                     </thead>
                     <tbody>
                         {% for day in employee_days %}
-                        <tr>
-                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                        <tr 
+                            class="
+                                {% if day.exit_hour <= 0 or day.enter_hour <= 0 %}
+                                border-b 
+                                {% endif %}
+                                border-gray-200
+                            "
+                        >
+                            <td class="px-5 py-5 text-sm bg-white">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {% if day.title %}
                                         {{ day.title }}
@@ -436,7 +443,7 @@
                                 </p>
                                 {{ day.date_day }}/{{ day.date_month }}/{{ current_year.title }}
                             </td>
-                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                            <td class="px-5 py-5 text-sm bg-white">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     الساعة 
                                     <span class="font-bold">{{ day.attend_hour }}</span>
@@ -445,7 +452,7 @@
                                     دقيقة
                                 </p>
                             </td>
-                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                            <td class="px-5 py-5 text-sm bg-white">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     الساعة 
                                     <span class="font-bold">{{ day.leave_hour }}</span>
@@ -454,7 +461,7 @@
                                     دقيقة
                                 </p>
                             </td>
-                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                            <td class="px-5 py-5 text-sm bg-white">
                                 <p class="text-gray-900 whitespace-no-wrap"> 
                                     <span class="font-bold">{{ day.total_hours }}</span>
                                     ساعة و 
@@ -462,7 +469,7 @@
                                     دقيقة
                                 </p>
                             </td>
-                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                            <td class="px-5 py-5 text-sm bg-white">
                                 <span class="relative inline-block px-3 py-1 font-semibold leading-tight text-green-900">
                                     <span class="absolute inset-0 bg-green-200 rounded-full opacity-50"></span>
                                     <span class="relative">
@@ -475,7 +482,7 @@
                                     </span>
                                 </span>
                             </td>
-                            <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
+                            <td class="px-5 py-5 text-sm bg-white">
                                 <span class="relative inline-block px-3 py-1 font-semibold leading-tight text-red-900">
                                     <span class="absolute inset-0 bg-red-200 rounded-full opacity-50"></span>
                                     <span class="relative">
@@ -491,7 +498,7 @@
                             <td 
                                 x-data="{ optionsOpen: false}"
                                 @click.outside="optionsOpen = false"
-                                class="relative px-5 py-5 border-b border-gray-200"
+                                class="relative px-5 py-5"
                             >
                                 {% if day.note %}
                                 <button 
@@ -534,10 +541,14 @@
                                                 '{{ day.attend_minute }}',
                                                 '{{ day.leave_hour }}',
                                                 '{{ day.leave_minute }}',
+                                                '{{ day.exit_hour }}',
+                                                '{{ day.exit_minute }}',
+                                                '{{ day.enter_hour }}',
+                                                '{{ day.enter_minute }}',
                                                 '{{ day.date_day }}',
                                                 '{{ day.date_month }}',
                                                 '{% if day.not %}
-                                                    {{ day.note|escapejs }}
+                                                {{ day.note|escapejs }}
                                                 {% endif %}'
                                             )"
                                             class="flex items-center justify-start px-4 py-2 text-black cursor-pointer gap-x-2 hover:bg-gray-100"
@@ -554,9 +565,27 @@
                                             <span>حــذف</span>
                                         </div>
                                 </div>
-
                             </td>
                         </tr>
+                            {% if day.exit_hour > 0 or day.enter_hour > 0 %}
+                            <tr>
+                                <td class="pb-4 border-b" colspan="7">
+                                    <span class="font-semibold bg-orange-200 mx-2 bg-opacity-50 rounded-full px-3 w-fit">
+                                        وقت الخروج الضمني:
+                                    </span>
+                                    <span class="px-3 bg-red-200 mx-2 rounded-full bg-opacity-50">
+                                        خروج عند الساعة 
+                                        <span class="font-bold">{{ day.exit_hour }}</span> و <span class="font-bold">{{ day.exit_minute }}</span>
+                                        دقيقة
+                                    </span>
+                                    <span class="px-3 bg-green-200 mx-2 rounded-full bg-opacity-50">
+                                        عودة عند الساعة 
+                                        <span class="font-bold">{{ day.enter_hour }}</span> و <span class="font-bold">{{ day.enter_minute }}</span>
+                                        دقيقة
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endif %}
                         {% empty %}
                         <tr>
                             <td class="px-5 py-5 text-sm bg-white border-b border-gray-200">
@@ -832,7 +861,7 @@
                 
             </div>
 
-            <div class="flex flex-col justify-center gap-3 items-right">
+            <div class="flex flex-col justify-right gap-3 items-right">
                 <p class="font-semibold">وقت الانصراف:</p>
                 <div class="flex items-center justify-center gap-x-3">
                     <input
@@ -849,6 +878,48 @@
                     >
                 </div>
             </div>
+
+            <div>
+                <p class="font-semibold mb-5">وقت الخروج الضمني: </p>
+                <div class="flex justify-between items-center">
+                    <div class="flex flex-col justify-between gap-3 items-right">
+                        <p>المغادرة: </p>
+                        <div class="flex items-center justify-center gap-x-3">
+                            <input
+                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                type="text" 
+                                placeholder="الساعة" 
+                                name="exit_hour"
+                            >
+                            <input
+                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                type="text" 
+                                placeholder="الدقيقة" 
+                                name="exit_minute"
+                            >
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center gap-3 items-right">
+                        <p>العودة: </p>
+                        <div class="flex items-center justify-center gap-x-3">
+                            <input
+                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                type="text" 
+                                placeholder="الساعة" 
+                                name="enter_hour"
+                            >
+                            <input
+                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                type="text" 
+                                placeholder="الدقيقة" 
+                                name="enter_minute"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
 
             <div class="flex flex-col justify-center gap-3 items-right">
                 <p class="font-semibold">تاريخ اليوم: </p>
@@ -1054,7 +1125,7 @@
         </form>`
     }
 
-    function updateDay(url, title, attend_hour, attend_minute, leave_hour, leave_minute, day, month, note){
+    function updateDay(url, title, attend_hour, attend_minute, leave_hour, leave_minute, exit_hour, exit_minute, enter_hour, enter_minute, day, month, note){
         modal.innerHTML = 
         `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
             تعديل معلومات
@@ -1110,6 +1181,50 @@
                         name="leave_minute"
                         value="${leave_minute}"
                     >
+                </div>
+            </div>
+
+            <div>
+                <p class="font-semibold mb-5">وقت الخروج الضمني: </p>
+                <div class="flex justify-between items-center">
+                    <div class="flex flex-col justify-between gap-3 items-right">
+                        <p>المغادرة: </p>
+                        <div class="flex items-center justify-center gap-x-3">
+                            <input
+                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                type="text" 
+                                placeholder="الساعة" 
+                                name="exit_hour"
+                                value="${exit_hour}"
+                            >
+                            <input
+                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                type="text" 
+                                placeholder="الدقيقة" 
+                                name="exit_minute"
+                                value="${exit_minute}"
+                            >
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center gap-3 items-right">
+                        <p>العودة: </p>
+                        <div class="flex items-center justify-center gap-x-3">
+                            <input
+                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                type="text" 
+                                placeholder="الساعة" 
+                                name="enter_hour"
+                                value="${enter_hour}"
+                            >
+                            <input
+                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                type="text" 
+                                placeholder="الدقيقة" 
+                                name="enter_minute"
+                                value="${enter_minute}"
+                            >
+                        </div>
+                    </div>
                 </div>
             </div>
 
