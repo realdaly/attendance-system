@@ -29,16 +29,3 @@ class DayForm(ModelForm):
     class Meta:
         model = Day
         fields = "__all__"
-        
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # Set the fields as not required and provide a default value
-        self.fields['exit_hour'].required = False
-        self.fields['exit_minute'].required = False
-        self.fields['enter_hour'].required = False
-        self.fields['enter_minute'].required = False
-        self.fields['exit_hour'].widget.attrs['value'] = 0
-        self.fields['exit_minute'].widget.attrs['value'] = 0
-        self.fields['enter_hour'].widget.attrs['value'] = 0
-        self.fields['enter_minute'].widget.attrs['value'] = 0

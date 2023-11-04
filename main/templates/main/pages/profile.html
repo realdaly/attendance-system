@@ -427,7 +427,7 @@
                         {% for day in employee_days %}
                         <tr 
                             class="
-                                {% if day.exit_hour <= 0 or day.enter_hour <= 0 %}
+                                {% if not day.exit_hour or not day.enter_hour %}
                                 border-b 
                                 {% endif %}
                                 border-gray-200
@@ -443,6 +443,15 @@
                                 </p>
                                 {{ day.date_day }}/{{ day.date_month }}/{{ current_year.title }}
                             </td>
+
+                            {% if day.time_off %}
+                            <td class="pb-4 border-b" colspan="5">
+                                <span class="font-semibold bg-orange-200 mx-2 bg-opacity-50 rounded-full px-3 w-fit">
+                                    يوم إجازة
+                                </span>
+                            </td>
+                            {% else %}
+
                             <td class="px-5 py-5 text-sm bg-white">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     الساعة 
@@ -495,6 +504,7 @@
                                     </span>
                                 </span>
                             </td>
+                            {% endif %}
                             <td 
                                 x-data="{ optionsOpen: false}"
                                 @click.outside="optionsOpen = false"
@@ -541,15 +551,14 @@
                                                 '{{ day.attend_minute }}',
                                                 '{{ day.leave_hour }}',
                                                 '{{ day.leave_minute }}',
+                                                '{{ day.date_day }}',
+                                                '{{ day.date_month }}',
+                                                '{{ day.time_off }}',
                                                 '{{ day.exit_hour }}',
                                                 '{{ day.exit_minute }}',
                                                 '{{ day.enter_hour }}',
                                                 '{{ day.enter_minute }}',
-                                                '{{ day.date_day }}',
-                                                '{{ day.date_month }}',
-                                                '{% if day.not %}
-                                                {{ day.note|escapejs }}
-                                                {% endif %}'
+                                                '{{ day.note|escapejs }}',
                                             )"
                                             class="flex items-center justify-start px-4 py-2 text-black cursor-pointer gap-x-2 hover:bg-gray-100"
                                         >
@@ -740,7 +749,7 @@
     // ADD
     function addYear(){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             إضافة سنة
         </h3>
 
@@ -783,7 +792,7 @@
 
     function addMonth(){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             إضافة شهر إلى {{ current_year.title }}
         </h3>
     
@@ -827,7 +836,7 @@
 
     function addDay(){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             إضافة يوم إلى {{ current_month.title }}
         </h3>
 
@@ -841,83 +850,91 @@
                 x-ref="input"
                 name="title"
             >
-
-            <div class="flex flex-col justify-center gap-3">
-                <p class="font-semibold">وقت الحضور:</p>
-                <div class="flex items-center justify-center gap-x-3">
-                    <input
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
-                        placeholder="الساعة" 
-                        required=""
-                        name="attend_hour"
-                    >
-                    <input
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
-                        placeholder="الدقيقة" 
-                        required=""
-                        name="attend_minute"
-                    >
-                </div>
-                
-            </div>
-
-            <div class="flex flex-col justify-right gap-3 items-right">
-                <p class="font-semibold">وقت الانصراف:</p>
-                <div class="flex items-center justify-center gap-x-3">
-                    <input
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
-                        placeholder="الساعة" 
-                        required=""
-                        name="leave_hour"
-                    >
-                    <input
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
-                        placeholder="الدقيقة" 
-                        required=""
-                        name="leave_minute"
-                    >
-                </div>
+            
+            <div class="flex items-center mr-5 select-none">
+                <input onchange="disableInputs()" id="default-checkbox" type="checkbox" name="time_off" class="cursor-pointer w-7 h-7 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+                <label for="default-checkbox" class="cursor-pointer mr-2">يوم إجازة</label>
             </div>
 
             <div>
-                <p class="font-semibold mb-5">وقت الخروج الضمني: </p>
-                <div class="flex justify-between items-center">
-                    <div class="flex flex-col justify-between gap-3 items-right">
-                        <p>المغادرة: </p>
-                        <div class="flex items-center justify-center gap-x-3">
-                            <input
-                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
-                                type="text" 
-                                placeholder="الساعة" 
-                                name="exit_hour"
-                            >
-                            <input
-                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
-                                type="text" 
-                                placeholder="الدقيقة" 
-                                name="exit_minute"
-                            >
-                        </div>
+                <div class="flex flex-col justify-center gap-3">
+                    <p class="font-semibold">وقت الحضور:</p>
+                    <div class="flex items-center justify-center gap-x-3">
+                        <input
+                            class="toDisable w-full px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
+                            placeholder="الساعة" 
+                            required=""
+                            name="attend_hour"
+                        >
+                        <input
+                            class="toDisable w-full px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
+                            placeholder="الدقيقة" 
+                            required=""
+                            name="attend_minute"
+                        >
                     </div>
-                    <div class="flex flex-col justify-center gap-3 items-right">
-                        <p>العودة: </p>
-                        <div class="flex items-center justify-center gap-x-3">
-                            <input
-                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
-                                type="text" 
-                                placeholder="الساعة" 
-                                name="enter_hour"
-                            >
-                            <input
-                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
-                                type="text" 
-                                placeholder="الدقيقة" 
-                                name="enter_minute"
-                            >
+                    
+                </div>
+
+                <div class="flex flex-col justify-right gap-3 items-right">
+                    <p class="font-semibold">وقت الانصراف:</p>
+                    <div class="flex items-center justify-center gap-x-3">
+                        <input
+                            class="toDisable w-full px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
+                            placeholder="الساعة" 
+                            required=""
+                            name="leave_hour"
+                        >
+                        <input
+                            class="toDisable w-full px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
+                            placeholder="الدقيقة" 
+                            required=""
+                            name="leave_minute"
+                        >
+                    </div>
+                </div>
+
+                <div>
+                    <p class="font-semibold mb-5">وقت الخروج الضمني: </p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex flex-col justify-between gap-3 items-right">
+                            <p>المغادرة: </p>
+                            <div class="flex items-center justify-center gap-x-3">
+                                <input
+                                    class="toDisable w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
+                                    type="text" 
+                                    placeholder="الساعة" 
+                                    name="exit_hour"
+                                >
+                                <input
+                                    class="toDisable w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
+                                    type="text" 
+                                    placeholder="الدقيقة" 
+                                    name="exit_minute"
+                                >
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center gap-3 items-right">
+                            <p>العودة: </p>
+                            <div class="flex items-center justify-center gap-x-3">
+                                <input
+                                    class="toDisable w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
+                                    type="text" 
+                                    placeholder="الساعة" 
+                                    name="enter_hour"
+                                >
+                                <input
+                                    class="toDisable w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
+                                    type="text" 
+                                    placeholder="الدقيقة" 
+                                    name="enter_minute"
+                                >
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
 
             
 
@@ -983,7 +1000,7 @@
 
     function showNote(note){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             الملاحظات
         </h3>
         <div>${note}</div>
@@ -992,7 +1009,7 @@
 
     function addMonthBefore(url, yearId){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             يرجى إضافة شهر قبل الانتقال إلى السنة
         </h3>
     
@@ -1038,7 +1055,7 @@
     // UPDATE
     function updateYear(url, title){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             تعديل معلومات
         </h3>
 
@@ -1082,7 +1099,7 @@
 
     function updateMonth(url, title){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             تعديل معلومات
         </h3>
     
@@ -1125,9 +1142,9 @@
         </form>`
     }
 
-    function updateDay(url, title, attend_hour, attend_minute, leave_hour, leave_minute, exit_hour, exit_minute, enter_hour, enter_minute, day, month, note){
+    function updateDay(url, title, attend_hour, attend_minute, leave_hour, leave_minute, day, month, time_off, exit_hour, exit_minute, enter_hour, enter_minute, note){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             تعديل معلومات
         </h3>
     
@@ -1143,22 +1160,29 @@
                 value="${title}"
             >
 
+            <div class="flex items-center mr-5 select-none">
+                <input onchange="disableInputs()" id="default-checkbox" type="checkbox" name="time_off" class="cursor-pointer w-7 h-7 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" ${time_off == 'True' ? 'checked' : ''}>
+                <label for="default-checkbox" class="cursor-pointer mr-2">يوم إجازة</label>
+            </div>
+
             <div class="flex flex-col justify-center gap-3 items-right">
                 <p class="font-semibold">وقت الحضور:</p>
                 <div class="flex items-center justify-center gap-x-3">
                     <input
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        class="toDisable w-full px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
                         placeholder="الساعة" 
                         required=""
                         name="attend_hour"
                         value="${attend_hour}"
+                        ${time_off == 'True' ? 'disabled' : ''}
                     >
                     <input
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        class="toDisable w-full px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
                         placeholder="الدقيقة" 
                         required=""
                         name="attend_minute"
                         value="${attend_minute}"
+                        ${time_off == 'True' ? 'disabled' : ''}
                     >
                 </div>
                 
@@ -1168,18 +1192,20 @@
                 <p class="font-semibold">وقت الانصراف:</p>
                 <div class="flex items-center justify-center gap-x-3">
                     <input
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        class="toDisable w-full px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
                         placeholder="الساعة" 
                         required=""
                         name="leave_hour"
                         value="${leave_hour}"
+                        ${time_off == 'True' ? 'disabled' : ''}
                     >
                     <input
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                        class="toDisable w-full px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
                         placeholder="الدقيقة" 
                         required=""
                         name="leave_minute"
                         value="${leave_minute}"
+                        ${time_off == 'True' ? 'disabled' : ''}
                     >
                 </div>
             </div>
@@ -1191,18 +1217,20 @@
                         <p>المغادرة: </p>
                         <div class="flex items-center justify-center gap-x-3">
                             <input
-                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                class="toDisable w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
                                 type="text" 
                                 placeholder="الساعة" 
                                 name="exit_hour"
-                                value="${exit_hour}"
+                                value="${exit_hour == 'None' ? '' : exit_hour}"
+                                ${time_off == 'True' ? 'disabled' : ''}
                             >
                             <input
-                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                class="toDisable w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
                                 type="text" 
                                 placeholder="الدقيقة" 
                                 name="exit_minute"
-                                value="${exit_minute}"
+                                value="${exit_minute == 'None' ? '' : exit_minute}"
+                                ${time_off == 'True' ? 'disabled' : ''}
                             >
                         </div>
                     </div>
@@ -1210,18 +1238,20 @@
                         <p>العودة: </p>
                         <div class="flex items-center justify-center gap-x-3">
                             <input
-                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                class="toDisable w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
                                 type="text" 
                                 placeholder="الساعة" 
                                 name="enter_hour"
-                                value="${enter_hour}"
+                                value="${enter_hour == 'None' ? '' : enter_hour}"
+                                ${time_off == 'True' ? 'disabled' : ''}
                             >
                             <input
-                                class="w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring" 
+                                class="toDisable w-36 px-4 py-2 border rounded-md focus:outline-none focus:ring disabled:bg-gray-400 transition-all" 
                                 type="text" 
                                 placeholder="الدقيقة" 
                                 name="enter_minute"
-                                value="${enter_minute}"
+                                value="${enter_minute == 'None' ? '' : enter_minute}"
+                                ${time_off == 'True' ? 'disabled' : ''}
                             >
                         </div>
                     </div>
@@ -1250,7 +1280,7 @@
                 </div>
             </div>
             
-            <input class="w-full px-4 py-2 mt-3 border rounded-md resize-none h-28 focus:outline-none focus:ring" name="note" value="${note}" placeholder="كتابة الملاحظات">
+            <input class="w-full px-4 py-2 mt-3 border rounded-md resize-none h-28 focus:outline-none focus:ring" name="note" value="${note == 'None' ? '' : note}" placeholder="كتابة الملاحظات">
 
 
             <input class="hidden" name="employee" value="{{ employee.id }}" hidden>
@@ -1292,7 +1322,7 @@
     // DELETE
     function deleteYear(url){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             هل أنت متأكد؟
         </h3>
 
@@ -1321,7 +1351,7 @@
 
     function deleteMonth(url){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             هل أنت متأكد؟
         </h3>
 
@@ -1350,7 +1380,7 @@
 
     function deleteDay(url){
         modal.innerHTML = 
-        `<h3 class="pb-2 mb-3 text-xl font-bold text-dark sm:text-2xl">
+        `<h3 class="pb-2 mb-3 text-xl font-bold sm:text-2xl">
             هل أنت متأكد؟
         </h3>
 
@@ -1375,6 +1405,18 @@
                 </div>
             </div>
         </form>`
+    }
+
+    function disableInputs(){
+        const inputs = document.querySelectorAll(".toDisable")
+
+        inputs.forEach(input => {
+            if(!input.disabled){
+                input.disabled = true
+            } else {
+                input.disabled = false
+            }
+        })
     }
 </script>
 

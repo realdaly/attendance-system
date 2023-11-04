@@ -145,25 +145,26 @@ class Day(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="days")
     month = models.ForeignKey(Month, on_delete=models.CASCADE, related_name="days")
     year = models.ForeignKey(Year, on_delete=models.CASCADE, related_name="days")
-    title = models.CharField(max_length=50, default="يوم في الشهر")
-    date_month = models.CharField(max_length=50, default=0)
-    date_day = models.CharField(max_length=50, default=0)
+    title = models.CharField(max_length=50, default="يوم في الشهر", null=True, blank=True)
+    date_month = models.CharField(max_length=50, default=0, null=True, blank=True)
+    date_day = models.CharField(max_length=50, default=0, null=True, blank=True)
     required_hours = models.PositiveIntegerField()
     required_minutes = models.PositiveIntegerField()
-    attend_hour = models.PositiveIntegerField()
-    attend_minute = models.PositiveIntegerField()
-    leave_hour = models.PositiveIntegerField()
-    leave_minute = models.PositiveIntegerField()
+    attend_hour = models.PositiveIntegerField(null=True, blank=True)
+    attend_minute = models.PositiveIntegerField(null=True, blank=True)
+    leave_hour = models.PositiveIntegerField(null=True, blank=True)
+    leave_minute = models.PositiveIntegerField(null=True, blank=True)
     more_hours = models.PositiveIntegerField(default=0)
     more_minutes = models.PositiveIntegerField(default=0)
     less_hours = models.PositiveIntegerField(default=0)
     less_minutes = models.PositiveIntegerField(default=0)
     total_hours = models.IntegerField(default=0)
     total_minutes = models.IntegerField(default=0)
-    exit_hour = models.PositiveIntegerField(default=0)
-    exit_minute = models.PositiveIntegerField(default=0)
-    enter_hour = models.PositiveIntegerField(default=0)
-    enter_minute = models.PositiveIntegerField(default=0)
+    exit_hour = models.PositiveIntegerField(null=True, blank=True)
+    exit_minute = models.PositiveIntegerField(null=True, blank=True)
+    enter_hour = models.PositiveIntegerField(null=True, blank=True)
+    enter_minute = models.PositiveIntegerField(null=True, blank=True)
+    time_off = models.BooleanField(default=False)
     note = models.CharField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
@@ -178,43 +179,53 @@ class Day(models.Model):
         self.year.update_more_less()
 
     def save(self, *args, **kwargs):
-        if not self.exit_hour:
-            self.exit_hour = 0
-        if not self.exit_minute:
-            self.exit_minute = 0
-        if not self.enter_hour:
-            self.enter_hour = 0
-        if not self.enter_minute:
-            self.enter_minute = 0
-            
-        # Get implicit exit and enter times in minutes
-        total_implicit_minutes =  (self.enter_hour * 60 + self.enter_minute) - (self.exit_hour * 60 + self.exit_minute)
+        if self.time_off:
+            pass
+        
+        total_implicit_minutes = 0
 
-        # Calculate the total minutes worked
-        total_minutes = (self.leave_hour * 60 + self.leave_minute) - (self.attend_hour * 60 + self.attend_minute) - total_implicit_minutes
+        if self.exit_hour or self.enter_hour:
+            # Get implicit exit and enter times in minutes
+            total_implicit_minutes =  (self.enter_hour * 60 + self.enter_minute) - (self.exit_hour * 60 + self.exit_minute)
 
-        # Calculate the total hours and total minutes
-        self.total_hours = total_minutes // 60
-        self.total_minutes = total_minutes % 60
-
-        # Calculate the difference between total time and required time
-        required_minutes = (self.required_hours * 60) + self.required_minutes
-
-        if total_minutes > required_minutes:
-            self.more_hours = (total_minutes - required_minutes) // 60
-            self.more_minutes = (total_minutes - required_minutes) % 60
-            self.less_hours = 0
-            self.less_minutes = 0
-        elif total_minutes < required_minutes:
-            self.less_hours = (required_minutes - total_minutes) // 60
-            self.less_minutes = (required_minutes - total_minutes) % 60
+        if(self.time_off):
+            self.attend_hour = 0
+            self.attend_minute = 0
+            self.leave_hour = 0
+            self.leave_minute = 0
             self.more_hours = 0
             self.more_minutes = 0
+            self.less_hours = 0
+            self.less_minutes = 0
+            self.total_hours = 0
+            self.total_minutes = 0
+
         else:
-            self.less_hours = 0
-            self.less_minutes = 0
-            self.more_hours = 0
-            self.more_minutes = 0
+            # Calculate the total minutes worked
+            total_minutes = (self.leave_hour * 60 + self.leave_minute) - (self.attend_hour * 60 + self.attend_minute) - total_implicit_minutes
+
+            # Calculate the total hours and total minutes
+            self.total_hours = total_minutes // 60
+            self.total_minutes = total_minutes % 60
+
+            # Calculate the difference between total time and required time
+            required_minutes = (self.required_hours * 60) + self.required_minutes
+
+            if total_minutes > required_minutes:
+                self.more_hours = (total_minutes - required_minutes) // 60
+                self.more_minutes = (total_minutes - required_minutes) % 60
+                self.less_hours = 0
+                self.less_minutes = 0
+            elif total_minutes < required_minutes:
+                self.less_hours = (required_minutes - total_minutes) // 60
+                self.less_minutes = (required_minutes - total_minutes) % 60
+                self.more_hours = 0
+                self.more_minutes = 0
+            else:
+                self.less_hours = 0
+                self.less_minutes = 0
+                self.more_hours = 0
+                self.more_minutes = 0
 
         super().save(*args, **kwargs)
         self.update_month_and_year()
